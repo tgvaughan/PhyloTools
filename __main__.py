@@ -14,8 +14,7 @@ if len(argv)<2:
     exit(0)
         
 args = parser.parse_args(argv[1:])
-graph = Parser.NewickGraph(args.infile.readline().strip())
+graph = Parser.NexusGraph(args.infile)
 
-print graph.getGraphHeight()
 painting = Painter.Painting(graph)
 painting.writePDF("out.pdf")

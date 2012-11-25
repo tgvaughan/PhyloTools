@@ -16,6 +16,10 @@ class NewickGraph(Graph):
 
         self.newickStr = newickStr
 
+        self.doParse(debug=debug)
+
+    def doParse(self, debug=False):
+
         # Tokenise input string:
         self.doLex(debug=debug)
 
@@ -297,3 +301,37 @@ class NewickGraph(Graph):
                 node.parents[0].addChild(primaryNode)
         
         del self.hybrids
+
+
+class NexusGraph(NewickGraph):
+
+    def __init__(self, nexusFile, debug=False):
+        Graph.__init__(self)
+
+        firstLine = nexusFile.readline()
+        if not firstLine.lower().startswith("#nexus"):
+            raise ParseError("Not a valid NEXUS file.")
+
+        treesSectionSeen = False
+        treeSeen = False
+        for line in nexusFile:
+            line = line.lower().strip()
+            if not treesSectionSeen:
+                if line.startswith("begin trees;"):
+                    treesSectionSeen = True
+                continue
+            
+            if line.startswith("end;"):
+                break
+
+            if line.startswith("tree "):
+                treeSeen = True
+
+                self.newickStr = line[(line.find('=')+1):].strip()
+                self.doParse(debug=debug)
+
+        if not treesSectionSeen:
+            raise ParseError("No tree section found.")
+        
+        if not treeSeen:
+            raise ParseError("Tree section contains no tree.")
