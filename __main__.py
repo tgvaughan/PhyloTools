@@ -15,5 +15,3 @@ if len(argv)<2:
         
 args = parser.parse_args(argv[1:])
 graph = Parser.NewickGraph(args.infile.readline().strip())
-
-print "({} nodes after merge)".format(len(graph.getNodeList()))

@@ -45,7 +45,10 @@ class Node:
     
     def getHeight(self):
         return self.height
-    
+
+    def getBranchLength(self):
+        return self.branchLength
+
 
 class Graph:
     def __init__(self, *startNodes):
