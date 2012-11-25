@@ -1,7 +1,7 @@
 from sys import argv, exit
 from argparse import ArgumentParser, FileType
 
-import Parser
+import Parser, Painter
 
 parser = ArgumentParser("PhyloPaint", description="""
 Paints graphical representations of annotated phylogenetic trees and networks.""")
@@ -15,3 +15,7 @@ if len(argv)<2:
         
 args = parser.parse_args(argv[1:])
 graph = Parser.NewickGraph(args.infile.readline().strip())
+
+print graph.getGraphHeight()
+painting = Painter.Painting(graph)
+painting.writePDF("out.pdf")

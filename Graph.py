@@ -49,6 +49,16 @@ class Node:
     def getBranchLength(self):
         return self.branchLength
 
+    def getSubGraphHeight(self):
+
+        if len(self.children)==0:
+            return self.height
+
+        maxHeight = 0
+        for child in self.children:
+            maxHeight  =  max(child.getSubGraphHeight(), maxHeight)
+        return maxHeight
+            
 
 class Graph:
     def __init__(self, *startNodes):
@@ -66,3 +76,11 @@ class Graph:
 
         for child in node.children:
             self.addNodesFromSubgraph(child, nodeSet)
+
+    def getGraphHeight(self):
+        
+        maxHeight = 0
+        for startNode in self.startNodes:
+            maxHeight = max(startNode.getSubGraphHeight(), maxHeight)
+
+        return maxHeight
