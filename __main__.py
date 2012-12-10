@@ -16,5 +16,7 @@ if len(argv)<2:
 args = parser.parse_args(argv[1:])
 graph = Parser.NexusGraph(args.infile)
 
-painting = Painter.Painting(graph)
-painting.writePDF("out.pdf")
+print len(graph.getLeafList())
+
+#painting = Painter.Painting(graph)
+#painting.writePDF("out.pdf")

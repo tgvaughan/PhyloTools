@@ -11,6 +11,9 @@ class Node:
         for parent in parents:
             self.addParent(parent)
 
+        # Horizontal position (set by layout engine)
+        self.position = None
+
     def addChild(self, child):
         self.children.append(child)
         child.parents.append(self)
@@ -58,7 +61,9 @@ class Node:
         for child in self.children:
             maxHeight  =  max(child.getSubGraphHeight(), maxHeight)
         return maxHeight
-            
+
+
+
 
 class Graph:
     def __init__(self, *startNodes):
@@ -84,3 +89,21 @@ class Graph:
             maxHeight = max(startNode.getSubGraphHeight(), maxHeight)
 
         return maxHeight
+
+    def getLeafList(self):
+        leavesSeen = set()
+        leaves = []
+        for startNode in self.startNodes:
+            leaves.extend(self.getSubGraphLeaves(startNode, leavesSeen))
+
+        return leaves
+
+    def getSubGraphLeaves(self, node, leavesSeen):
+        if len(node.children)==0 and (node not in leavesSeen):
+            leavesSeen.add(node)
+            return [node]
+        else:
+            leaves = []
+            for child in node.children:
+                leaves.extend(self.getSubGraphLeaves(child, leavesSeen))
+            return leaves
