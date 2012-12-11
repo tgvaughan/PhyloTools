@@ -173,7 +173,6 @@ class NewickGraph(Graph):
 
     def ruleL(self, node, debug=False):
         if self.acceptToken('LABEL') or self.acceptToken('NUM'):
-
             if debug:
                 sys.stdout.write(" Lab:" + str(self.valueList[self.i-1]))
 
@@ -184,7 +183,9 @@ class NewickGraph(Graph):
 
     def ruleH(self, node, debug=False):
         if self.acceptToken('HASH'):
-            self.acceptToken('LABEL', manditory=True)
+            if not (self.acceptToken('LABEL') or self.acceptToken('NUM')):
+                self.parseError()
+
             hlabel = self.valueList[self.i-1]
             if hlabel in self.hybrids.keys():
                 self.hybrids[hlabel].append(node)
