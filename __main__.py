@@ -1,7 +1,7 @@
 from sys import argv, exit
 from argparse import ArgumentParser, FileType
 
-import Parser, Painter
+import Parser, Painter, Layout
 
 parser = ArgumentParser("PhyloPaint", description="""
 Paints graphical representations of annotated phylogenetic trees and networks.""")
@@ -16,7 +16,14 @@ if len(argv)<2:
 args = parser.parse_args(argv[1:])
 graph = Parser.NexusGraph(args.infile)
 
-print len(graph.getLeafList())
+print graph.getStartNodes()[0].getDecendentCount()
 
-#painting = Painter.Painting(graph)
-#painting.writePDF("out.pdf")
+# Sort nodes:
+graph.reorder()
+
+# Position nodes within a unit square:
+Layout.layout(graph)
+
+# Draw positioned nodes to output file using Cairo:
+painting = Painter.Painting(graph, rect=True)
+painting.writePDF("out.pdf")

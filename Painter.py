@@ -1,27 +1,17 @@
 import cairo
 from random import random
 from Graph import Graph
+from math import sqrt
         
 class Painting:
 
-    def __init__(self, graph):
+    def __init__(self, graph, rect=True):
         self.graph = graph
-        self.nodePlacements = {}
-        self.placeNodes()
+        self.rect = rect
 
-    def placeNodes(self):
-        
-        nodeList = self.graph.getNodeList()
-        graphHeight = self.graph.getGraphHeight()
-        
-        for node in nodeList:
-            x = random()
-            y = node.getHeight()/graphHeight
-            self.nodePlacements[node] = [x,y]
-        
     def writePDF(self, outFileName):
 
-        surface = cairo.PDFSurface(outFileName, 100, 200)
+        surface = cairo.PDFSurface(outFileName, 100, sqrt(2)*100)
         context = cairo.Context(surface)
         context.scale(100,100)
 
@@ -29,17 +19,37 @@ class Painting:
 
         surface.finish()
 
+    def scaledPos(self, position, margin, aspect):
+        
+        xPrintableFrac = 1.0 - margin;
+        yPrintableFrac = aspect - margin
+
+        offset = 0.5*margin
+
+        x,y = position
+        newx = xPrintableFrac*x + offset
+        newy = yPrintableFrac*y + offset
+
+        return (newx, newy)
+
     def drawPhylo(self, context):
 
         context.set_source_rgb(0,0,0)
-        context.set_line_width(.005)
+        context.set_line_width(.001)
+        graphHeight = self.graph.getGraphHeight()
 
-        for node in self.nodePlacements.keys():
-            x,y = self.nodePlacements[node]
+        for node in self.graph.getNodeList():
+
+            x,y = self.scaledPos(node.getPosition(), 0.1, sqrt(2.0))
 
             for child in node.children:
-                context.move_to(x, 2.0*y)
-                xc, yc = self.nodePlacements[child]
-                context.line_to(xc, 2.0*yc)
+                context.move_to(x, y)
+                xc, yc = self.scaledPos(child.getPosition(), 0.1, sqrt(2.0))
+
+                if self.rect:
+                    context.line_to(xc, y)
+                    context.line_to(xc, yc)
+                else:
+                    context.line_to(xc, yc)
         
         context.stroke()

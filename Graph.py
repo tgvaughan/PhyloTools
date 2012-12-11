@@ -7,6 +7,8 @@ class Node:
         self.height = None
         self.label = None
         self.annotation = {}
+        self.position = None
+        self.nDecendents = None
 
         for parent in parents:
             self.addParent(parent)
@@ -34,17 +36,23 @@ class Node:
     def setHeight(self, height):
         self.height = height
     
+    def setPosition(self, position):
+        self.position = position
+    
     def isRoot(self):
-        if len(parent)==0:
-            return True
-        else:
-            return False
+        return len(self.parent)==0
 
     def isLeaf(self):
-        if len(children)==0:
-            return True
-        else:
-            return False
+        return len(self.children)==0
+
+    def getParents(self):
+        return self.parents
+
+    def getChildren(self):
+        return self.children
+
+    def getPosition(self):
+        return self.position
     
     def getHeight(self):
         return self.height
@@ -62,12 +70,22 @@ class Node:
             maxHeight  =  max(child.getSubGraphHeight(), maxHeight)
         return maxHeight
 
+    def getDecendentCount(self):
 
+        if self.nDecendents == None:
+            self.nDecendents = 0
+            for child in self.getChildren():
+                self.nDecendents += 1+child.getDecendentCount()
+
+        return self.nDecendents
 
 
 class Graph:
     def __init__(self, *startNodes):
         self.startNodes = list(startNodes)
+
+    def getStartNodes(self):
+        return self.startNodes
 
     def getNodeList(self):
         nodes = set()
@@ -107,3 +125,28 @@ class Graph:
             for child in node.children:
                 leaves.extend(self.getSubGraphLeaves(child, leavesSeen))
             return leaves
+
+    def reorder(self, ascending=True):
+        """Sort children of each node according to their number of decendents."""
+
+        for startNode in self.getStartNodes():
+            self.reorderSubGraph(startNode, ascending)
+        
+
+    def reorderSubGraph(self, node, ascending):
+
+        for child in node.getChildren():
+            self.reorderSubGraph(child, ascending)
+
+        node.children.sort(cmp=nodeDecCompare, reverse=not ascending)
+
+def nodeDecCompare(nodeA, nodeB):
+    diff =  nodeA.getDecendentCount() - nodeB.getDecendentCount()
+    if diff == 0:
+        return 0
+    else:
+        return diff/abs(diff)
+                               
+            
+
+        
