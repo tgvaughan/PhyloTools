@@ -20,12 +20,56 @@ class Painting:
 
     def writePDF(self, outFileName):
 
-        surface = cairo.PDFSurface(outFileName, 100, sqrt(2)*100)
+        surface = cairo.PDFSurface(outFileName, 595, self.aspect*595)
         context = cairo.Context(surface)
-        context.scale(100,100)
+        context.scale(595,595)
 
         self.drawPhylo(context)
 
+        surface.finish()
+
+    def writeSVG(self, outFileName):
+
+        surface = cairo.SVGSurface(outFileName, 595, self.aspect*595)
+        context = cairo.Context(surface)
+        context.scale(595,595)
+
+        self.drawPhylo(context)
+
+        surface.finish()
+
+    def writePS(self, outFileName):
+
+        surface = cairo.PSSurface(outFileName, 595, self.aspect*595)
+        context = cairo.Context(surface)
+        context.scale(595,595)
+
+        self.drawPhylo(context)
+
+        surface.finish()
+
+    def writePNG(self, outFileName):
+
+        surface = cairo.ImageSurface(cairo.FORMAT_RGB24,
+                                     1000, int(self.aspect*1000))
+
+        # Get surface context:
+        context = cairo.Context(surface)
+
+        # Give image a white background (black by default):
+        context.set_source_rgb(1,1,1)
+        context.rectangle(0,0, surface.get_width(), surface.get_height())
+        context.fill()
+
+        # Scale context so that painting method doesn't have to know
+        # physical dimensions:
+        context.scale(1000,1000)
+
+        # Draw phylogeny:
+        self.drawPhylo(context)
+
+        # Write to file and finish:
+        surface.write_to_png(outFileName)
         surface.finish()
 
     def scaledPos(self, position):
