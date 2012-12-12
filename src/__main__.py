@@ -3,7 +3,7 @@ from argparse import ArgumentParser, FileType
 
 import Parser, Painter, Layout
 
-parser = ArgumentParser("PhyloPaint", description="""
+parser = ArgumentParser("phylopaint", description="""
 Paints graphical representations of annotated phylogenetic trees and networks.""")
 
 parser.add_argument("infile", type=FileType('r'), help="""
