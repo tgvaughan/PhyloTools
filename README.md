@@ -6,11 +6,13 @@ trees and networks and renders them in a variety of output formats via
 the Cairo graphics library.  Unlike the majority of tree visualisers
 available, this program works non-interactively.
 
-The eventual aim is to provide something similar to GraphViz, but 
-specifically aimed at rooted and timed phylogenies where one axis
+The eventual aim is to provide something similar to GraphViz, but
+specifically targeted at rooted and timed phylogenies where one axis
 is scaled to represent time.
 
 This is a work in progress, although it can already be used to paint
 readable trees and networks from Nexus files containing annotated
 extended Newick trees---as produced by
-[Hamlet](http://tgvaughan.github.com/Hamlet).
+[Hamlet](http://tgvaughan.github.com/Hamlet).  The program requires a
+working 2.7 Python installation and the
+[pycairo](http://cairographics.org/pycairo/) module.
