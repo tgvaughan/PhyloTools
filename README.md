@@ -10,4 +10,7 @@ The eventual aim is to provide something similar to GraphViz, but
 specifically aimed at rooted and timed phylogenies where one axis
 is scaled to represent time.
 
-This is a work in progress and is not yet in a usable state.
+This is a work in progress, although it can already be used to paint
+readable trees and networks from Nexus files containing annotated
+extended Newick trees---as produced by
+[Hamlet](http://tgvaughan.github.com/Hamlet).
