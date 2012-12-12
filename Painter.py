@@ -65,7 +65,7 @@ class Painting:
                             parentsSamePos[j] = True
 
             # Draw circle at node:
-            if self.drawNodes:
+            if self.drawNodes and not node.isLeaf():
                 context.move_to(x+.003,y)
                 context.arc(x,y,.003,0,2*pi)
 

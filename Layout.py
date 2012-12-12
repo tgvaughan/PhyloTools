@@ -48,6 +48,8 @@ def layoutParentBranches(node):
 
     else:
         if nParents > 1:
+
+            # Determine range of allowable branch positions:
             node.parentBranchPositions = range(nParents)
             minPos = node.getPosition()[0]-0.01*(1+random())
             maxPos = node.getPosition()[0]+0.01*(1+random())
@@ -57,13 +59,18 @@ def layoutParentBranches(node):
                 if parent.getPosition()[0]>maxPos:
                     maxPos = parent.getPosition()[0]
 
-            delta = (maxPos-minPos)/float(nParents - 1)
+            # Obtain indices of parents sorted in order of
+            # their horizontal node positions:
+            pidx = range(nParents)
+            pidx.sort(key=lambda x: node.getParents()[x].getPosition()[0])
 
+            # Select parent branch positions:
+            delta = (maxPos-minPos)/float(nParents - 1)
             for i,parent in enumerate(node.getParents()):
                 if len(parent.getChildren())==1:
                     node.parentBranchPositions[i] = parent.getPosition()[0]
                 else:
-                    node.parentBranchPositions[i] = minPos + delta*i
+                    node.parentBranchPositions[i] = minPos + delta*pidx[i]
                     #node.parentBranchPositions[i] = node.getPosition()[0]
 
             
