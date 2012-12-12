@@ -8,7 +8,8 @@ Paints graphical representations of annotated phylogenetic trees and networks.""
 
 parser.add_argument("infile", type=FileType('r'), help="""
 Phylogenetic tree/network in extended NEXUS format.
-(If no nexus header is found, straight extended Newick is assumed.)""")
+(If no nexus header is found, straight extended Newick is assumed.)
+Files can be read in from standard input using - as the input argument.""")
 parser.add_argument("outfile", type=str, help="""
 Name of output file to create.""")
 parser.add_argument("-f","--format",type=str,help="""
@@ -39,6 +40,7 @@ else:
 
 if args.format == None:
     print "Could not determine output format from file extention."
+    print "(Specify explicitly using --format.)"
     exit(1)
 
 if args.format not in ["pdf","ps", "svg", "png"]:
