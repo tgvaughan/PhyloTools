@@ -311,7 +311,10 @@ class NexusGraph(NewickGraph):
 
         firstLine = nexusFile.readline()
         if not firstLine.lower().startswith("#nexus"):
-            raise ParseError("Not a valid NEXUS file.")
+            print "Not a valid NEXUS file. Trying to parse as extended Newick..."
+            self.newickStr = firstLine.strip()
+            self.doParse(debug=debug)
+            return
 
         treesSectionSeen = False
         treeSeen = False

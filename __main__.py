@@ -7,7 +7,8 @@ parser = ArgumentParser("PhyloPaint", description="""
 Paints graphical representations of annotated phylogenetic trees and networks.""")
 
 parser.add_argument("infile", type=FileType('r'), help="""
-Phylogenetic tree/network in extended NEXUS format.""")
+Phylogenetic tree/network in extended NEXUS format.
+(If no nexus header is found, straight extended Newick is assumed.)""")
 parser.add_argument("outfile", type=str, help="""
 Name of PDF output file to create.""")
 
@@ -23,6 +24,8 @@ if len(argv)<2:
     exit(0)
         
 args = parser.parse_args(argv[1:])
+
+# Parse graph:
 graph = Parser.NexusGraph(args.infile)
 
 # Sort nodes:
