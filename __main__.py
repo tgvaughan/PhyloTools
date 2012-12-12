@@ -8,6 +8,9 @@ Paints graphical representations of annotated phylogenetic trees and networks.""
 
 parser.add_argument("infile", type=FileType('r'), help="""
 Phylogenetic tree/network in extended NEXUS format.""")
+parser.add_argument("outfile", type=str, help="""
+Name of PDF output file to create.""")
+
 parser.add_argument("-r","--rect", action="store_true", help="""
 Use rectangular edges when drawing graph.""")
 parser.add_argument("-d","--drawNodes", action="store_true", help="""
@@ -31,4 +34,4 @@ Layout.layout(graph)
 
 # Draw positioned nodes to output file using Cairo:
 painting = Painter.Painting(graph, rect=args.rect, drawNodes=args.drawNodes)
-painting.writePDF("out.pdf")
+painting.writePDF(args.outfile)
