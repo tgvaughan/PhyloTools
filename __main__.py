@@ -12,6 +12,8 @@ parser.add_argument("-r","--rect", action="store_true", help="""
 Use rectangular edges when drawing graph.""")
 parser.add_argument("-d","--drawNodes", action="store_true", help="""
 Draw additional circles representing nodes.""")
+parser.add_argument("-s","--sortTree", action="store_true",help="""
+Sort child nodes in order of clade size.""")
     
 if len(argv)<2:
     parser.print_usage()
@@ -21,7 +23,8 @@ args = parser.parse_args(argv[1:])
 graph = Parser.NexusGraph(args.infile)
 
 # Sort nodes:
-graph.reorder()
+if args.sortTree:
+    graph.reorder()
 
 # Position nodes within a unit square:
 Layout.layout(graph)
