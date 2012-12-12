@@ -7,7 +7,11 @@ parser = ArgumentParser("PhyloPaint", description="""
 Paints graphical representations of annotated phylogenetic trees and networks.""")
 
 parser.add_argument("infile", type=FileType('r'), help="""
-Phylogenetic tree/network in extended Newick or NEXUS format.""")
+Phylogenetic tree/network in extended NEXUS format.""")
+parser.add_argument("-r","--rect", action="store_true", help="""
+Use rectangular edges when drawing graph.""")
+parser.add_argument("-d","--drawNodes", action="store_true", help="""
+Draw additional circles representing nodes.""")
     
 if len(argv)<2:
     parser.print_usage()
@@ -23,5 +27,5 @@ graph.reorder()
 Layout.layout(graph)
 
 # Draw positioned nodes to output file using Cairo:
-painting = Painter.Painting(graph, rect=True)
+painting = Painter.Painting(graph, rect=args.rect, drawNodes=args.drawNodes)
 painting.writePDF("out.pdf")

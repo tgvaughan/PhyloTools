@@ -8,6 +8,7 @@ class Node:
         self.label = None
         self.annotation = {}
         self.position = None
+        self.parentBranchPositions = []
         self.nDecendents = None
 
         for parent in parents:
@@ -38,7 +39,7 @@ class Node:
     
     def setPosition(self, position):
         self.position = position
-    
+
     def isRoot(self):
         return len(self.parent)==0
 
@@ -138,15 +139,7 @@ class Graph:
         for child in node.getChildren():
             self.reorderSubGraph(child, ascending)
 
-        node.children.sort(cmp=nodeDecCompare, reverse=not ascending)
-
-def nodeDecCompare(nodeA, nodeB):
-    diff =  nodeA.getDecendentCount() - nodeB.getDecendentCount()
-    if diff == 0:
-        return 0
-    else:
-        return diff/abs(diff)
-                               
+        node.children.sort(key=lambda x: x.getDecendentCount())                               
             
 
         

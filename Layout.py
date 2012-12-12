@@ -1,3 +1,5 @@
+from random import random
+
 def layout(graph):
     """Determine optimal (in some sense) physical positions for
     nodes on a graph."""
@@ -18,6 +20,10 @@ def layout(graph):
     for startNode in graph.getStartNodes():
         layoutSubGraph(startNode, graphHeight)
 
+    # Position branches between nodes and parents:
+    for startNode in graph.getStartNodes():
+        layoutParentBranches(startNode)
+
 
 def layoutSubGraph(node, graphHeight):
 
@@ -32,3 +38,34 @@ def layoutSubGraph(node, graphHeight):
     node.setPosition((xPos, node.getHeight()/graphHeight))
 
     return xPos
+
+def layoutParentBranches(node):
+
+    nParents = len(node.getParents())
+
+    if nParents == 1:
+        node.parentBranchPositions = [node.getPosition()[0]]
+
+    else:
+        if nParents > 1:
+            node.parentBranchPositions = range(nParents)
+            minPos = node.getPosition()[0]-0.01*(1+random())
+            maxPos = node.getPosition()[0]+0.01*(1+random())
+            for parent in node.getParents():
+                if parent.getPosition()[0]<minPos:
+                    minPos = parent.getPosition()[0]
+                if parent.getPosition()[0]>maxPos:
+                    maxPos = parent.getPosition()[0]
+
+            delta = (maxPos-minPos)/float(nParents - 1)
+
+            for i,parent in enumerate(node.getParents()):
+                if len(parent.getChildren())==1:
+                    node.parentBranchPositions[i] = parent.getPosition()[0]
+                else:
+                    node.parentBranchPositions[i] = minPos + delta*i
+                    #node.parentBranchPositions[i] = node.getPosition()[0]
+
+            
+    for child in node.getChildren():
+        layoutParentBranches(child)
