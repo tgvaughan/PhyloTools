@@ -230,7 +230,7 @@ class NewickGraph(Graph):
             return
 
     def ruleV(self, debug=False):
-        if self.acceptToken('LABEL'):
+        if self.acceptToken('LABEL') or self.acceptToken('NUM'):
             return self.valueList[self.i-1]
         else:
             self.acceptToken('OPENV', manditory=True)
