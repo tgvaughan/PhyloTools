@@ -13,6 +13,6 @@ is scaled to represent time.
 This is a work in progress, although it can already be used to paint
 readable trees and networks from Nexus files containing annotated
 extended Newick trees---as produced by
-[Hamlet](http://tgvaughan.github.com/Hamlet).  The program requires a
+[MASTER](http://tgvaughan.github.com/MASTER).  The program requires a
 working 2.7 Python installation and the
 [pycairo](http://cairographics.org/pycairo/) module.
