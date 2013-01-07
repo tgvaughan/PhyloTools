@@ -15,6 +15,9 @@ Name of output file to create.""")
 parser.add_argument("-f","--format",type=str,help="""
 Specify format of output file.  Default is to infer from
 output file name extension.""")
+parser.add_argument("-t","--tree", type=int, default=None, help="""
+If more than one tree/network exists in input file, specifies
+particular tree to graph.""")
 
 # Graphical style options
 parser.add_argument("-r","--rect", action="store_true", help="""
@@ -47,8 +50,12 @@ if args.format not in ["pdf","ps", "svg", "png"]:
     print "Unsupported output format '{}'.".format(args.format)
     exit(1)
 
-# Parse graph:
-graph = Parser.NexusGraph(args.infile)
+# Parse graphs:
+graphs = Parser.readFile(args.infile, graphNum=args.tree-1)
+if len(graphs)>1:
+    print "Cannot yet deal with multiple trees.  Please select an individual tree using --tree."
+    exit(1)
+graph = graphs[0]
 
 # Sort nodes:
 if args.sortTree:

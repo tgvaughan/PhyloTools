@@ -304,38 +304,57 @@ class NewickGraph(Graph):
         del self.hybrids
 
 
-class NexusGraph(NewickGraph):
+def readFile (fh, debug=False, graphNum=None):
 
-    def __init__(self, nexusFile, debug=False):
-        Graph.__init__(self)
-
-        firstLine = nexusFile.readline()
-        if not firstLine.lower().startswith("#nexus"):
-            print "Not a valid NEXUS file. Trying to parse as extended Newick..."
-            self.newickStr = firstLine.strip()
-            self.doParse(debug=debug)
-            return
-
-        treesSectionSeen = False
-        treeSeen = False
-        for line in nexusFile:
-            line = line.lower().strip()
-            if not treesSectionSeen:
-                if line.startswith("begin trees;"):
-                    treesSectionSeen = True
+    graphs = []
+    
+    firstLine = fh.readline()
+    if not firstLine.lower().startswith("#nexus"):
+        print "Not a valid NEXUS file. Trying to parse as a collection of extended Newick strings..."
+        for n,line in enumerate(fh):
+            if graphNum != None and graphNum != n:
                 continue
+            newickStr = line.strip()
+            graphs.append(NewickGraph(newickStr, debug=debug))
             
-            if line.startswith("end;"):
-                break
-
-            if line.startswith("tree "):
-                treeSeen = True
-
-                self.newickStr = line[(line.find('=')+1):].strip()
-                self.doParse(debug=debug)
-
-        if not treesSectionSeen:
-            raise ParseError("No tree section found.")
+        if len(graphs)==0:
+            raise ParseError("No graphs found.");
+            
+        print "Successfuly parsed {} graphs.".format(len(graphs))
+        return
         
-        if not treeSeen:
-            raise ParseError("Tree section contains no tree.")
+    treesSectionSeen = False
+    newickStr = ""
+    n = 0
+    for line in fh:
+        line = line.lower().strip()
+        if not treesSectionSeen:
+            if line.startswith("begin trees;"):
+                treesSectionSeen = True
+            continue
+            
+        if line.startswith("end;"):
+            if len(newickStr)>0:
+                if graphNum == None or graphNum == n:
+                    graphs.append(NewickGraph(newickStr, debug=debug))
+            break
+
+        if line.startswith("tree "):
+            if len(newickStr)>0:
+                if graphNum == None or graphNum == n:
+                    graphs.append(NewickGraph(newickStr, debug=debug))
+                n += 1
+            newickStr = line[(line.find('=')+1):].strip()
+        else:
+            newickStr += line;
+
+    if not treesSectionSeen:
+        raise ParseError("No tree section found.")
+
+    if len(graphs)==0:
+        raise ParseError("No graphs found.");
+    
+    if debug:
+        print "Successfuly parsed {} graphs.".format(len(graphs))
+
+    return graphs
