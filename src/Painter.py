@@ -6,17 +6,20 @@ from random import random
         
 class Painting:
 
-    def __init__(self, graph, rect=True, drawNodes=False, bow=0.2):
+    def __init__(self, graph, rect=True, drawNodes=False, colourTrait=None, bow=0.2):
         self.graph = graph
         self.rect = rect
         self.drawNodes = drawNodes
         self.bow = bow
+        self.colourTrait = colourTrait
 
         self.margin = .1
         self.aspect = sqrt(2)
 
         self.xPrintableFrac = 1.0 - self.margin
         self.yPrintableFrac = self.aspect - self.margin
+
+        self.seenTraits = []
 
     def writePDF(self, outFileName):
 
@@ -84,6 +87,25 @@ class Painting:
 
         return self.xPrintableFrac*x + 0.5*self.margin
 
+    def selectColour(self, node, context):
+        
+        if self.colourTrait == None:
+            context.set_source_rgb(0,0,0)
+            return
+
+        pallet = [(0,0,1), (0,1,0), (0,1,1), (1,0,0), (1,0,1), (1,1,0)]
+
+        value = node.annotation[self.colourTrait]
+
+        if value in self.seenTraits:
+            idx = self.seenTraits.index(value)
+        else:
+            self.seenTraits.append(value)
+            idx = len(self.seenTraits)-1
+
+        g,r,b = pallet[idx%len(pallet)]
+        context.set_source_rgb(r,g,b)
+
     def drawPhylo(self, context):
 
         context.set_source_rgb(0,0,0)
@@ -93,6 +115,9 @@ class Painting:
         for node in self.graph.getNodeList():
 
             x,y = self.scaledPos(node.getPosition())
+
+            # Choose colour from pallet:
+            self.selectColour(node, context)
 
             # Check whether any parents of node have the same
             # x position:
@@ -134,4 +159,4 @@ class Painting:
                     else:
                         context.line_to(xp, yp)
         
-        context.stroke()
+            context.stroke()

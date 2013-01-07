@@ -24,8 +24,10 @@ parser.add_argument("-r","--rect", action="store_true", help="""
 Use rectangular edges when drawing graph.""")
 parser.add_argument("-d","--drawNodes", action="store_true", help="""
 Draw additional circles representing nodes.""")
-parser.add_argument("-s","--sortTree", action="store_true",help="""
+parser.add_argument("-s","--sortTree", action="store_true", help="""
 Sort child nodes in order of clade size.""")
+parser.add_argument("-c","--colourTrait", type=str, help="""
+Give unique values of this trait different colours.""")
     
 if len(argv)<2:
     parser.print_usage()
@@ -65,7 +67,7 @@ if args.sortTree:
 Layout.layout(graph)
 
 # Draw positioned nodes to output file using Cairo:
-painting = Painter.Painting(graph, rect=args.rect, drawNodes=args.drawNodes)
+painting = Painter.Painting(graph, rect=args.rect, drawNodes=args.drawNodes, colourTrait=args.colourTrait)
 
 writerMap = {"svg": painting.writeSVG,
              "pdf": painting.writePDF,
