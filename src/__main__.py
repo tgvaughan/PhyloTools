@@ -53,7 +53,7 @@ if args.format not in ["pdf","ps", "svg", "png"]:
     exit(1)
 
 # Parse graphs:
-graphs = Parser.readFile(args.infile, graphNum=args.tree-1)
+graphs = Parser.readFile(args.infile, graphNum=args.tree)
 if len(graphs)>1:
     print "Cannot yet deal with multiple trees.  Please select an individual tree using --tree."
     exit(1)
