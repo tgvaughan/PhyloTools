@@ -324,6 +324,7 @@ def readFile (fh, debug=False, graphNum=None):
         return
         
     treesSectionSeen = False
+    inTranslate = False
     newickStr = ""
     n = 0
     for line in fh:
@@ -331,6 +332,14 @@ def readFile (fh, debug=False, graphNum=None):
         if not treesSectionSeen:
             if line.startswith("begin trees;"):
                 treesSectionSeen = True
+            continue
+
+        if not inTranslate and line.startswith("translate"):
+            inTranslate = True
+
+        if inTranslate:
+            if line.endswith(";"):
+                inTranslate = False
             continue
             
         if line.startswith("end;"):
