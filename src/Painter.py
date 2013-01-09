@@ -6,12 +6,13 @@ from random import random
         
 class Painting:
 
-    def __init__(self, graph, rect=True, drawNodes=False, colourTrait=None, bow=0.2):
+    def __init__(self, graph, rect=True, drawNodes=False, colourTrait=None, lineWidth=1.0, bow=0.2):
         self.graph = graph
         self.rect = rect
         self.drawNodes = drawNodes
         self.bow = bow
         self.colourTrait = colourTrait
+        self.lineWidth = lineWidth
 
         self.margin = .1
         self.aspect = sqrt(2)
@@ -109,7 +110,7 @@ class Painting:
     def drawPhylo(self, context):
 
         context.set_source_rgb(0,0,0)
-        context.set_line_width(.001)
+        context.set_line_width(.001*self.lineWidth)
         graphHeight = self.graph.getGraphHeight()
 
         for node in self.graph.getNodeList():

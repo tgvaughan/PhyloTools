@@ -12,7 +12,7 @@ Phylogenetic tree/network in extended NEXUS format.
 Files can be read in from standard input using - as the input argument.""")
 parser.add_argument("outfile", type=str, help="""
 Name of output file to create.""")
-parser.add_argument("-f","--format",type=str,help="""
+parser.add_argument("-f","--format",type=str, help="""
 Specify format of output file.  Default is to infer from
 output file name extension.""")
 parser.add_argument("-t","--tree", type=int, default=None, help="""
@@ -26,8 +26,11 @@ parser.add_argument("-d","--drawNodes", action="store_true", help="""
 Draw additional circles representing nodes.""")
 parser.add_argument("-s","--sortTree", action="store_true", help="""
 Sort child nodes in order of clade size.""")
+parser.add_argument("-l","--lineWidth", type=float, default=1.0, help="""
+Relative width of lines.""")
 parser.add_argument("-c","--colourTrait", type=str, help="""
 Give unique values of this trait different colours.""")
+
     
 if len(argv)<2:
     parser.print_usage()
@@ -67,7 +70,7 @@ if args.sortTree:
 Layout.layout(graph)
 
 # Draw positioned nodes to output file using Cairo:
-painting = Painter.Painting(graph, rect=args.rect, drawNodes=args.drawNodes, colourTrait=args.colourTrait)
+painting = Painter.Painting(graph, rect=args.rect, drawNodes=args.drawNodes, colourTrait=args.colourTrait, lineWidth=args.lineWidth)
 
 writerMap = {"svg": painting.writeSVG,
              "pdf": painting.writePDF,
