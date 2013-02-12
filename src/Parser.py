@@ -50,6 +50,7 @@ class NewickGraph(Graph):
             ('RPAREN',  '\)'),
             ('COLON',   ':'),
             ('NUM', '\d+(\.\d+)?([eE]-?\d+)?'),
+            ('STRING', '"[^"]*"'),
             ('LABEL',   '[a-zA-Z0-9_]+'),
             ('HASH', '#'),
             ('OPENA', '\[&'),
@@ -61,7 +62,7 @@ class NewickGraph(Graph):
             ('SEMI',    ';')
             ]
 
-        valueTokens = ['NUM','LABEL']
+        valueTokens = ['NUM','LABEL', 'STRING']
 
         idx=0
         tokenList=[]
@@ -92,7 +93,7 @@ class NewickGraph(Graph):
                     break
 
             if noMatch:
-                raise ParseError('Lex error at character' + str(idx) + ": '"
+                raise ParseError('Lex error at character ' + str(idx) + ": '"
                         + self.newickStr[idx] + "'.")
 
         self.tokenList = tokenList
@@ -230,7 +231,7 @@ class NewickGraph(Graph):
             return
 
     def ruleV(self, debug=False):
-        if self.acceptToken('LABEL') or self.acceptToken('NUM'):
+        if self.acceptToken('LABEL') or self.acceptToken('NUM') or self.acceptToken('STRING'):
             return self.valueList[self.i-1]
         else:
             self.acceptToken('OPENV', manditory=True)

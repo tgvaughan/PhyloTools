@@ -31,6 +31,9 @@ Relative width of lines.""")
 parser.add_argument("-c","--colourTrait", type=str, help="""
 Give unique values of this trait different colours.""")
 
+# Misc options
+parser.add_argument("--debug", action="store_true", help="""
+Turn on parser debugging output.""")
     
 if len(argv)<2:
     parser.print_usage()
@@ -56,7 +59,7 @@ if args.format not in ["pdf","ps", "svg", "png"]:
     exit(1)
 
 # Parse graphs:
-graphs = Parser.readFile(args.infile, graphNum=args.tree)
+graphs = Parser.readFile(args.infile, graphNum=args.tree, debug=args.debug)
 if len(graphs)>1:
     print "Cannot yet deal with multiple trees.  Please select an individual tree using --tree."
     exit(1)
