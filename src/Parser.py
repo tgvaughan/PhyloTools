@@ -327,7 +327,7 @@ def readFile (fh, debug=False, graphNum=None):
             raise ParseError("No graphs found.");
             
         print "Successfuly parsed {} graphs.".format(len(graphs))
-        return
+        return graphs
         
     treesSectionSeen = False
     inTranslate = False
