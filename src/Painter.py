@@ -99,7 +99,7 @@ class Painting:
         if self.colourTrait in node.annotation.keys():
             value = node.annotation[self.colourTrait]
         else:
-            value = "NA"
+            value = None
 
         if value in self.seenTraits:
             idx = self.seenTraits.index(value)
