@@ -306,12 +306,17 @@ class NewickGraph(Graph):
 
 
 def readFile (fh, debug=False, graphNum=None):
+    """Extract graphs from given file."""
 
     graphs = []
     
     firstLine = fh.readline()
     if not firstLine.lower().startswith("#nexus"):
         print "Not a valid NEXUS file. Trying to parse as a collection of extended Newick strings..."
+
+        # Rewind:
+        fh.seek(0)
+
         for n,line in enumerate(fh):
             if graphNum != None and graphNum != n:
                 continue
