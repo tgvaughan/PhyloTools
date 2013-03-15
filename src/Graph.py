@@ -28,8 +28,10 @@ class Node:
     def setLabel(self, label):
         self.label = label
 
-    def annotate(self, key, value):
-        self.annotation[key] = value
+    def annotate(self, parent, key, value):
+        if parent not in self.annotation:
+            self.annotation[parent] = {}
+        self.annotation[parent][key] = value
     
     def setBranchLength(self, branchLength):
         self.branchLength = branchLength

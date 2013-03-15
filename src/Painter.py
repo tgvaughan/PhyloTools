@@ -96,10 +96,11 @@ class Painting:
 
         pallet = [(0,0,1), (0,1,0), (0,1,1), (1,0,0), (1,0,1), (1,1,0)]
 
-        if self.colourTrait in node.annotation.keys():
-            value = node.annotation[self.colourTrait]
-        else:
-            value = None
+        value = None
+        if len(node.annotation.values())>0:
+            keys = node.annotation.values()[0]
+            if self.colourTrait in keys:
+                value = node.annotation[self.colourTrait]
 
         if value in self.seenTraits:
             idx = self.seenTraits.index(value)

@@ -104,7 +104,7 @@ class NewickGraph(Graph):
 
     def parseError(self):
         raise ParseError('Error parsing token {} ({})'.format(
-                self.tokenList[self.i]), self.valueList[self.i])
+                self.tokenList[self.i], self.valueList[self.i]))
 
     def acceptToken(self, token, manditory=False):
         if self.tokenList[self.i]==token:
@@ -143,7 +143,7 @@ class NewickGraph(Graph):
         self.ruleS(node, debug=debug)
         self.ruleL(node, debug=debug)
         self.ruleH(node, debug=debug)
-        self.ruleA(node, debug=debug)
+        self.ruleA(node, parent, debug=debug)
         self.ruleB(node, debug=debug)
 
         if debug:
@@ -199,16 +199,16 @@ class NewickGraph(Graph):
             # accept epsilon
             return
 
-    def ruleA(self, node, debug=False):
+    def ruleA(self, node, parent, debug=False):
         if self.acceptToken('OPENA'):
-            self.ruleC(node, debug=debug)
-            self.ruleD(node, debug=debug)
+            self.ruleC(node, parent, debug=debug)
+            self.ruleD(node, parent, debug=debug)
             self.acceptToken('CLOSEA', manditory=True)
         else:
             # accept epsilon
             return
 
-    def ruleC(self, node, debug=False):
+    def ruleC(self, node, parent, debug=False):
         self.acceptToken('LABEL', manditory=True)
 
         key = self.valueList[self.i-1]
@@ -217,15 +217,15 @@ class NewickGraph(Graph):
 
         value = self.ruleV()
 
-        node.annotate(key, value)
+        node.annotate(parent, key, value)
 
         if debug:
             sys.stdout.write(" Annot:{}={}".format(key,value))
 
-    def ruleD(self, node, debug=False):
+    def ruleD(self, node, parent, debug=False):
         if self.acceptToken('COMMA'):
-            self.ruleC(node, debug=debug)
-            self.ruleD(node, debug=debug)
+            self.ruleC(node, parent, debug=debug)
+            self.ruleD(node, parent, debug=debug)
         else:
             # accept epsilon
             return
