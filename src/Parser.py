@@ -337,11 +337,18 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
         lines = [firstLine]
         lines.extend(fh.readlines())
 
+        # Strip empty/commented lines:
+        tmp = []
+        for line in lines:
+            thisline = line.strip()
+            if len(thisline)>0 and (not thisline.startswith("#")):
+                tmp.append(thisline)
+        lines = tmp
+
         for n,line in enumerate(lines):
             if graphNum != None and graphNum != n:
                 continue
-            newickStr = line.strip()
-            graphs.append(NewickGraph(newickStr, afTrait=afTrait, debug=debug))
+            graphs.append(NewickGraph(line, afTrait=afTrait, debug=debug))
             
         if len(graphs)==0:
             raise ParseError("No graphs found.");
