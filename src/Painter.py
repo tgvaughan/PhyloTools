@@ -6,16 +6,18 @@ from random import random
         
 class Painting:
 
-    def __init__(self, graph, rect=True, drawNodes=False, colourTrait=None, lineWidth=1.0, bow=0.2):
+    def __init__(self, graph, rect=True, drawNodes=False, colourTrait=None, ancestralFragmentTrait=None,
+                 lineWidth=1.0, bow=0.2, aspect=sqrt(2), margin=.1):
         self.graph = graph
         self.rect = rect
         self.drawNodes = drawNodes
         self.bow = bow
         self.colourTrait = colourTrait
+        self.ancestralFragmentTrait = ancestralFragmentTrait
         self.lineWidth = lineWidth
 
-        self.margin = .1
-        self.aspect = sqrt(2)
+        self.margin = margin
+        self.aspect = aspect
 
         self.xPrintableFrac = 1.0 - self.margin
         self.yPrintableFrac = self.aspect - self.margin
@@ -111,12 +113,53 @@ class Painting:
         g,r,b = pallet[idx%len(pallet)]
         context.set_source_rgb(r,g,b)
 
+    def drawAncestral(self, node, parent, pos, context):
+
+        if self.ancestralFragmentTrait == None:
+            return
+
+        if (parent not in node.annotation) or (self.ancestralFragmentTrait not in node.annotation[parent].keys()):
+            return
+
+        width=.05
+        height=.005
+
+        # Draw empty box:
+        widthP = width
+        heightP = height
+        context.set_source_rgb(1,1,1)
+        x1,y1=self.scaledPos((pos[0]-0.5*widthP,pos[1]-0.5*heightP))
+        x2,y2=self.scaledPos((pos[0]+0.5*widthP,pos[1]+0.5*heightP))
+        context.rectangle(x1, y1, x2-x1, y2-y1)
+        context.fill()
+
+        # Draw box boundary
+        self.selectColour(node, context)
+        x1,y1=self.scaledPos((pos[0]-0.5*width,pos[1]-0.5*height))
+        x2,y2=self.scaledPos((pos[0]+0.5*width,pos[1]+0.5*height))
+        context.rectangle(x1, y1, x2-x1, y2-y1)
+        context.stroke()
+
+        # Fill ancestral fragments:
+        fragments = node.annotation[parent][self.ancestralFragmentTrait]
+        nfrag = len(fragments)/2
+        for i in range(nfrag):
+            boundary1 = fragments[i*2]
+            boundary2 = fragments[i*2 + 1]
+
+            xb1 = self.scaledXPos(pos[0]-0.5*width + boundary1*width)
+            xb2 = self.scaledXPos(pos[0]-0.5*width + boundary2*width)
+
+            context.rectangle(xb1, y1, xb2-xb1, y2-y1)
+            context.fill()
+
     def drawPhylo(self, context):
 
         context.set_source_rgb(0,0,0)
         context.set_line_width(.001*self.lineWidth)
         graphHeight = self.graph.getGraphHeight()
 
+        # Draw graph:
         for node in self.graph.getNodeList():
 
             x,y = self.scaledPos(node.getPosition())
@@ -142,6 +185,7 @@ class Painting:
             if self.drawNodes and not node.isLeaf():
                 context.move_to(x+.003,y)
                 context.arc(x,y,.003,0,2*pi)
+                context.fill()
 
             for i,parent in enumerate(node.parents):
                 context.move_to(x, y)
@@ -153,6 +197,7 @@ class Painting:
                     context.line_to(xpb,y)
                     context.line_to(xpb,yp)
                     context.line_to(xp,yp)
+                    context.stroke()
                 else:
                     if parentsSamePos[i]:
                         # Use a Bezier curve offset randomly
@@ -163,5 +208,17 @@ class Painting:
                         context.curve_to(cpx,cpy,cpx,cpy,xp,yp)
                     else:
                         context.line_to(xp, yp)
-        
-            context.stroke()
+
+                context.stroke()
+
+
+        # Draw ancestral sequence fragments:
+        for node in self.graph.getNodeList():
+
+            for i,parent in enumerate(node.parents):
+
+                if self.rect:
+                    barPosX = node.parentBranchPositions[i]
+                    r = random()*0.5 + 0.25
+                    barPosY = r*parent.getPosition()[1] + (1-r)*node.getPosition()[1]
+                    self.drawAncestral(node, parent, (barPosX, barPosY), context)

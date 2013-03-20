@@ -1,5 +1,6 @@
 from sys import argv, exit
 from argparse import ArgumentParser, FileType
+from math import sqrt
 
 import Parser, Painter, Layout
 
@@ -28,8 +29,14 @@ parser.add_argument("-s","--sortTree", action="store_true", help="""
 Sort child nodes in order of clade size.""")
 parser.add_argument("-l","--lineWidth", type=float, default=1.0, help="""
 Relative width of lines.""")
+parser.add_argument("-a","--aspectRatio", type=float, default=sqrt(2), help="""
+Aspect ratio of figure.""")
+
 parser.add_argument("-c","--colourTrait", type=str, help="""
 Give unique values of this trait different colours.""")
+parser.add_argument("--ancestralFragmentTrait", type=str, help="""
+Trait used to specify ancestral fragment intervals.""")
+
 
 # Misc options
 parser.add_argument("--debug", action="store_true", help="""
@@ -73,7 +80,12 @@ if args.sortTree:
 Layout.layout(graph)
 
 # Draw positioned nodes to output file using Cairo:
-painting = Painter.Painting(graph, rect=args.rect, drawNodes=args.drawNodes, colourTrait=args.colourTrait, lineWidth=args.lineWidth)
+painting = Painter.Painting(graph,
+                            rect=args.rect,
+                            drawNodes=args.drawNodes,
+                            colourTrait=args.colourTrait,
+                            ancestralFragmentTrait=args.ancestralFragmentTrait,
+                            lineWidth=args.lineWidth, aspect=args.aspectRatio)
 
 writerMap = {"svg": painting.writeSVG,
              "pdf": painting.writePDF,

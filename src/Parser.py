@@ -301,6 +301,7 @@ class NewickGraph(Graph):
                 
                 node.parents[0].children.remove(node)
                 node.parents[0].addChild(primaryNode)
+                primaryNode.annotation[node.parents[0]] = node.annotation[node.parents[0]]
         
         del self.hybrids
 
@@ -314,10 +315,10 @@ def readFile (fh, debug=False, graphNum=None):
     if not firstLine.lower().startswith("#nexus"):
         print "Not a valid NEXUS file. Trying to parse as a collection of extended Newick strings..."
 
-        # Rewind:
-        fh.seek(0)
+        lines = [firstLine]
+        lines.extend(fh.readlines())
 
-        for n,line in enumerate(fh):
+        for n,line in enumerate(lines):
             if graphNum != None and graphNum != n:
                 continue
             newickStr = line.strip()
@@ -372,4 +373,5 @@ def readFile (fh, debug=False, graphNum=None):
     if debug:
         print "Successfuly parsed {} graphs.".format(len(graphs))
 
+    fh.close()
     return graphs
