@@ -6,14 +6,13 @@ from random import random
         
 class Painting:
 
-    def __init__(self, graph, rect=True, drawNodes=False, colourTrait=None, ancestralFragmentTrait=None,
+    def __init__(self, graph, rect=True, drawNodes=False, colourTrait=None,
                  lineWidth=1.0, bow=0.2, aspect=sqrt(2), margin=.1):
         self.graph = graph
         self.rect = rect
         self.drawNodes = drawNodes
         self.bow = bow
         self.colourTrait = colourTrait
-        self.ancestralFragmentTrait = ancestralFragmentTrait
         self.lineWidth = lineWidth
 
         self.margin = margin
@@ -113,13 +112,7 @@ class Painting:
         g,r,b = pallet[idx%len(pallet)]
         context.set_source_rgb(r,g,b)
 
-    def drawAncestral(self, node, parent, pos, context):
-
-        if self.ancestralFragmentTrait == None:
-            return
-
-        if (parent not in node.annotation) or (self.ancestralFragmentTrait not in node.annotation[parent].keys()):
-            return
+    def drawAncestral(self, ancestral, pos, context):
 
         width=.05
         height=.005
@@ -134,18 +127,17 @@ class Painting:
         context.fill()
 
         # Draw box boundary
-        self.selectColour(node, context)
+        context.set_source_rgb(0,0,0)
         x1,y1=self.scaledPos((pos[0]-0.5*width,pos[1]-0.5*height))
         x2,y2=self.scaledPos((pos[0]+0.5*width,pos[1]+0.5*height))
         context.rectangle(x1, y1, x2-x1, y2-y1)
         context.stroke()
 
         # Fill ancestral fragments:
-        fragments = node.annotation[parent][self.ancestralFragmentTrait]
-        nfrag = len(fragments)/2
+        nfrag = len(ancestral)/2
         for i in range(nfrag):
-            boundary1 = fragments[i*2]
-            boundary2 = fragments[i*2 + 1]
+            boundary1 = ancestral[i*2]
+            boundary2 = ancestral[i*2 + 1]
 
             xb1 = self.scaledXPos(pos[0]-0.5*width + boundary1*width)
             xb2 = self.scaledXPos(pos[0]-0.5*width + boundary2*width)
@@ -213,12 +205,22 @@ class Painting:
 
 
         # Draw ancestral sequence fragments:
-        for node in self.graph.getNodeList():
+        if hasattr(self.graph, "ancestralFragments"):
+            for node,parent in self.graph.ancestralFragments.keys():
 
-            for i,parent in enumerate(node.parents):
+                fragments = self.graph.ancestralFragments[(node,parent)]
 
-                if self.rect:
-                    barPosX = node.parentBranchPositions[i]
-                    r = random()*0.5 + 0.25
-                    barPosY = r*parent.getPosition()[1] + (1-r)*node.getPosition()[1]
-                    self.drawAncestral(node, parent, (barPosX, barPosY), context)
+                k=0
+                for i,parentP in enumerate(node.parents):
+
+                    if parentP != parent:
+                        continue
+
+                    if self.rect:
+                        barPosX = node.parentBranchPositions[i]
+                        r = random()*0.5 + 0.25
+                        barPosY = r*parent.getPosition()[1] + (1-r)*node.getPosition()[1]
+                        self.drawAncestral(fragments[k], (barPosX, barPosY), context)
+
+                    k += 1
+

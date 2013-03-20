@@ -7,6 +7,7 @@ class Node:
         self.height = None
         self.label = None
         self.annotation = {}
+
         self.position = None
         self.parentBranchPositions = []
         self.nDecendents = None
@@ -28,10 +29,8 @@ class Node:
     def setLabel(self, label):
         self.label = label
 
-    def annotate(self, parent, key, value):
-        if parent not in self.annotation:
-            self.annotation[parent] = {}
-        self.annotation[parent][key] = value
+    def annotate(self, key, value):
+        self.annotation[key] = value
     
     def setBranchLength(self, branchLength):
         self.branchLength = branchLength

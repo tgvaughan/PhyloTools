@@ -11,10 +11,16 @@ class ParseError(Exception):
 
 class NewickGraph(Graph):
 
-    def __init__(self, newickStr, debug=False):
+    def __init__(self, newickStr, afTrait=None, debug=False):
         Graph.__init__(self)
 
         self.newickStr = newickStr
+
+        # Initialise dictionary for recording ancestral
+        # sequence fragment information
+        self.afTrait = afTrait
+        if afTrait != None:
+            self.ancestralFragments = {}
 
         self.doParse(debug=debug)
 
@@ -217,7 +223,13 @@ class NewickGraph(Graph):
 
         value = self.ruleV()
 
-        node.annotate(parent, key, value)
+        if hasattr(self, "ancestralFragments") and key == self.afTrait:
+            if (node,parent) not in self.ancestralFragments:
+                self.ancestralFragments[(node,parent)] = [value]
+            else:
+                self.ancestralFragments[(node,parent)].append(value)
+        else:
+            node.annotate(key, value)
 
         if debug:
             sys.stdout.write(" Annot:{}={}".format(key,value))
@@ -285,7 +297,7 @@ class NewickGraph(Graph):
             self.getHeightsRecurse(child, node)
 
     def mergeHybrids(self):
-        
+
         for group in self.hybrids.keys():
             
             # Find primary node:
@@ -301,12 +313,19 @@ class NewickGraph(Graph):
                 
                 node.parents[0].children.remove(node)
                 node.parents[0].addChild(primaryNode)
-                primaryNode.annotation[node.parents[0]] = node.annotation[node.parents[0]]
+                primaryNode.annotation.update(node.annotation)
+
+                if (primaryNode,node.parents[0]) in self.ancestralFragments:
+                    self.ancestralFragments[(primaryNode, node.parents[0])].extend(self.ancestralFragments[(node,node.parents[0])])
+                else:
+                    self.ancestralFragments[(primaryNode, node.parents[0])] = self.ancestralFragments[(node,node.parents[0])]
+
+                del self.ancestralFragments[(node, node.parents[0])]
         
         del self.hybrids
 
 
-def readFile (fh, debug=False, graphNum=None):
+def readFile (fh, debug=False, afTrait=None, graphNum=None):
     """Extract graphs from given file."""
 
     graphs = []
@@ -322,7 +341,7 @@ def readFile (fh, debug=False, graphNum=None):
             if graphNum != None and graphNum != n:
                 continue
             newickStr = line.strip()
-            graphs.append(NewickGraph(newickStr, debug=debug))
+            graphs.append(NewickGraph(newickStr, afTrait=afTrait, debug=debug))
             
         if len(graphs)==0:
             raise ParseError("No graphs found.");
@@ -352,7 +371,7 @@ def readFile (fh, debug=False, graphNum=None):
         if line.startswith("end;"):
             if len(newickStr)>0:
                 if graphNum == None or graphNum == n:
-                    graphs.append(NewickGraph(newickStr, debug=debug))
+                    graphs.append(NewickGraph(newickStr, afTrait=afTrait, debug=debug))
             break
 
         if line.startswith("tree "):

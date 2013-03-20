@@ -66,7 +66,10 @@ if args.format not in ["pdf","ps", "svg", "png"]:
     exit(1)
 
 # Parse graphs:
-graphs = Parser.readFile(args.infile, graphNum=args.tree, debug=args.debug)
+graphs = Parser.readFile(args.infile,
+                         graphNum=args.tree,
+                         afTrait=args.ancestralFragmentTrait,
+                         debug=args.debug)
 if len(graphs)>1:
     print "Cannot yet deal with multiple trees.  Please select an individual tree using --tree."
     exit(1)
@@ -84,7 +87,6 @@ painting = Painter.Painting(graph,
                             rect=args.rect,
                             drawNodes=args.drawNodes,
                             colourTrait=args.colourTrait,
-                            ancestralFragmentTrait=args.ancestralFragmentTrait,
                             lineWidth=args.lineWidth, aspect=args.aspectRatio)
 
 writerMap = {"svg": painting.writeSVG,
