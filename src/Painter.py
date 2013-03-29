@@ -90,7 +90,7 @@ class Painting:
         return self.xPrintableFrac*x + 0.5*self.margin
 
     def selectColour(self, node, context):
-        
+
         if self.colourTrait == None:
             context.set_source_rgb(0,0,0)
             return
@@ -99,7 +99,7 @@ class Painting:
 
         value = None
         if len(node.annotation.values())>0:
-            keys = node.annotation.values()[0]
+            keys = node.annotation.keys()
             if self.colourTrait in keys:
                 value = node.annotation[self.colourTrait]
 
