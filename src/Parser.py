@@ -315,12 +315,14 @@ class NewickGraph(Graph):
                 node.parents[0].addChild(primaryNode)
                 primaryNode.annotation.update(node.annotation)
 
-                if (primaryNode,node.parents[0]) in self.ancestralFragments:
-                    self.ancestralFragments[(primaryNode, node.parents[0])].extend(self.ancestralFragments[(node,node.parents[0])])
-                else:
-                    self.ancestralFragments[(primaryNode, node.parents[0])] = self.ancestralFragments[(node,node.parents[0])]
+                # Deal with ancestral fragment annotations:
+                if hasattr(self, "ancestralFragments"):
+                    if (primaryNode,node.parents[0]) in self.ancestralFragments:
+                        self.ancestralFragments[(primaryNode, node.parents[0])].extend(self.ancestralFragments[(node,node.parents[0])])
+                    else:
+                        self.ancestralFragments[(primaryNode, node.parents[0])] = self.ancestralFragments[(node,node.parents[0])]
 
-                del self.ancestralFragments[(node, node.parents[0])]
+                    del self.ancestralFragments[(node, node.parents[0])]
         
         del self.hybrids
 
