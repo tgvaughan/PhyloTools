@@ -6,7 +6,8 @@ from sys import argv, exit
 import Graph
 import Parser
 
-statFuncs = {"height": lambda x: x.getGraphHeight()}
+statFuncs = {"height": lambda x: x.getGraphHeight(),
+             "origin": lambda x: x.getGraphOrigin()}
 
 if __name__=='__main__':
 

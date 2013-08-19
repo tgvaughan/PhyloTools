@@ -110,6 +110,16 @@ class Graph:
 
         return maxHeight
 
+    def getGraphOrigin(self):
+
+        maxOrigin = 0
+        for startNode in self.startNodes:
+            maxOrigin = max(startNode.getSubGraphHeight(), maxOrigin)
+            if startNode.branchLength != None:
+                maxOrigin += startNode.branchLength
+
+        return maxOrigin
+
     def getLeafList(self):
         leavesSeen = set()
         leaves = []
