@@ -399,7 +399,7 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
         raise ParseError("No graphs found.");
     
     if debug:
-        print "Successfuly parsed {} graphs.".format(len(graphs))
+        print "Successfully parsed {} graphs.".format(len(graphs))
 
     fh.close()
     return graphs
