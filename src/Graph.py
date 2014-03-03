@@ -81,6 +81,41 @@ class Node:
 
         return self.nDecendents
 
+    def getNewick(self, seenHybrids):
+        """Obtain extended Newick representation of subgraph under self."""
+
+        thisStr = ""
+
+        if len(self.parents)>1:
+            if self in seenHybrids:
+                thisStr = "#H" + seenHybrids.index(self) + ":" + str(self.branchLength)
+                return (thisStr)
+            else:
+                seenHybrids.append(self)
+
+        if len(self.children)>0:
+            thisStr += "("
+            
+            for child in self.children:
+                if self.children.index(child)>0:
+                    thisStr += ","
+                thisStr += child.getNewick(seenHybrids)
+                
+            thisStr += ")"
+
+        if self.label != None:
+            thisStr += self.label
+            
+        if len(self.parents)>1:
+            thisStr += "#H" + seenHybrids.index(self)
+
+        if self.branchLength == None:
+            thisStr += ":0.0"
+        else:
+            thisStr += ":" + str(self.branchLength)
+
+        return (thisStr)
+    
 
 class Graph:
     def __init__(self, *startNodes):
@@ -153,4 +188,17 @@ class Graph:
         node.children.sort(key=lambda x: x.getDecendentCount())                               
             
 
+    def getNewick(self):
+        """Obtain extended Newick representation of graph."""
         
+        newick = ""
+        seenHybrids = []
+
+        for startNode in self.startNodes:
+            if self.startNodes.index(startNode)>0:
+                newick += ","
+            newick += startNode.getNewick(seenHybrids)
+
+        newick += ";"
+
+        return (newick)
