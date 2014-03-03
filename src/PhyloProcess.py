@@ -17,15 +17,24 @@ def trimGraphRootEdges(graph):
 
         graph.startNodes[graph.getStartNodes().index(startNode)] = newStartNode
         newStartNode.branchLength = 0.0
-
-actionFuncs = {"trim": trimGraphRootEdges}
+        
+def sortGraph(graph):
+    """Sorts children of each node according to the number of children in each of
+    their subgraphs."""
+    graph.reorder()
+        
+actionFuncs = {"trim": trimGraphRootEdges,
+               "sort": sortGraph}
         
 if __name__=='__main__':
 
     parser = ArgumentParser(description="Various tools for modifying phylogenetic networks.")
-    parser.add_argument("graphfile", type=FileType('r'), help="File containing graph data.")
-    parser.add_argument("outfile", type=FileType('w'), help="File to write result to.")
-    parser.add_argument("actions", type=str, nargs="+", help="One or more actions to perform. (Currently only trim.)")
+    parser.add_argument("graphfile", type=FileType('r'),
+                        help="File containing graph data.")
+    parser.add_argument("outfile", type=FileType('w'),
+                        help="File to write result to.")
+    parser.add_argument("actions", type=str, nargs="+",
+                        help="One or more actions to perform. (Currently only trim and reorder.)")
 
     # Parse arguments
     args = parser.parse_args(argv[1:])
