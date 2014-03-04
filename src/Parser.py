@@ -57,6 +57,7 @@ class NewickGraph(Graph):
             ('COLON',   ':'),
             ('NUM', '\d+(\.\d+)?([eE]-?\d+)?'),
             ('STRING', '"[^"]*"'),
+            ('STRING', '\'[^\']*\''),
             ('LABEL',   '[a-zA-Z0-9_]+'),
             ('HASH', '#'),
             ('OPENA', '\[&'),
