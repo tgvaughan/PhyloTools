@@ -335,7 +335,8 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
     
     firstLine = fh.readline()
     if not firstLine.lower().startswith("#nexus"):
-        print "Not a valid NEXUS file. Trying to parse as a collection of extended Newick strings..."
+        if debug:
+            print "Not a valid NEXUS file. Trying to parse as a collection of extended Newick strings..."
 
         lines = [firstLine]
         lines.extend(fh.readlines())
@@ -355,8 +356,9 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
             
         if len(graphs)==0:
             raise ParseError("No graphs found.");
-            
-        print "Successfuly parsed {} graphs.".format(len(graphs))
+
+        if debug:
+            print "Successfuly parsed {} graphs.".format(len(graphs))
         return graphs
         
     treesSectionSeen = False
