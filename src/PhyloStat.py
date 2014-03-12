@@ -7,14 +7,16 @@ import Graph
 import Parser
 
 statFuncs = {"height": lambda x: x.getGraphHeight(),
-             "origin": lambda x: x.getGraphOrigin()}
+             "origin": lambda x: x.getGraphOrigin(),
+             "nleaves": lambda x: len(x.getLeafList())}
 
 if __name__=='__main__':
 
     parser = ArgumentParser(description="Calculate stats from phylogenetic graphs.")
     parser.add_argument("graphfile", type=FileType('r'), help="File containing graph data.")
     parser.add_argument("-n", action="store_true", help="Do NOT prepend statistic names to output.")
-    parser.add_argument("stats", type=str, nargs="+", help="""One or more statistics to calculate.""")
+    parser.add_argument("stats", type=str, nargs="+", help=
+    "One or more statistics to calculate. Currently may be any of: " + ", ".join(statFuncs.keys()))
 
     # Parse arguments
     args = parser.parse_args(argv[1:])
