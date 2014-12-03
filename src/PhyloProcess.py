@@ -22,11 +22,35 @@ def sortGraph(graph):
     """Sorts children of each node according to the number of children in each of
     their subgraphs."""
     graph.reorder()
-        
+
+
+def collapseSingletons(node, parent):
+    if len(node.getChildren()) == 1 and len(node.getParents()) == 1:
+        node.children[0].branchLength += node.branchLength
+        parent.children[parent.children.index(node)] = node.children[0]
+        node.children[0].parents[node.children[0].parents.index(node)] = parent
+        collapseSingletons(node.children[0], parent)
+
+def removeSingletons(graph):
+    """Removes all single-child nodes from a graph."""
+    for node in graph.getNodeList():
+        if len(node.getChildren())>1:
+            for i,v in enumerate(node.getChildren()):
+                collapseSingletons(v, node)
+
+
 actionFuncs = {"trim": trimGraphRootEdges,
-               "sort": sortGraph}
+               "sort": sortGraph,
+               "removeSingletons": removeSingletons}
         
 if __name__=='__main__':
+
+    actionListString = ""
+    for action in actionFuncs.keys():
+        if len(actionListString)==0:
+            actionListString = action
+        else:
+            actionListString += ", " + action
 
     parser = ArgumentParser(description="Various tools for modifying phylogenetic networks.")
     parser.add_argument("graphfile", type=FileType('r'),
@@ -34,7 +58,7 @@ if __name__=='__main__':
     parser.add_argument("outfile", type=FileType('w'),
                         help="File to write result to.")
     parser.add_argument("actions", type=str, nargs="+",
-                        help="One or more actions to perform. (Currently only trim and reorder.)")
+            help="One or more actions to perform.  Available actions: " + actionListString)
 
     # Parse arguments
     args = parser.parse_args(argv[1:])
@@ -49,4 +73,4 @@ if __name__=='__main__':
                 actionFuncs[action](graph)
                 args.outfile.write(graph.getNewick() + "\n")
         else:
-            raise Exception("Unsupported action {}".format(stat))
+            raise Exception("Unsupported action {}".format(action))
