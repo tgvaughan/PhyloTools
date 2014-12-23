@@ -154,7 +154,7 @@ class Painting:
         # Draw graph:
         for node in self.graph.getNodeList():
 
-            x,y = self.scaledPos(node.getPosition())
+            x,y = self.scaledPos(node.position)
 
             # Choose colour from pallet:
             self.selectColour(node, context)
@@ -162,13 +162,13 @@ class Painting:
             # Check whether any parents of node have the same
             # x position:
             if not self.rect:
-                nParents = len(node.getParents())
+                nParents = len(node.parents)
                 parentsSamePos = [False]*nParents
                 parentCount = [0]*nParents
                 for i in range(nParents):
-                    iPos = node.getParents()[i].getPosition()[0]
+                    iPos = node.parents[i].position[0]
                     for j in range(i):
-                        jPos = node.getParents()[j].getPosition()[0]
+                        jPos = node.parents[j].position[0]
                         if abs(iPos-jPos)<0.001:
                             parentsSamePos[i] = True
                             parentsSamePos[j] = True
@@ -182,7 +182,7 @@ class Painting:
             for i,parent in enumerate(node.parents):
                 context.move_to(x, y)
 
-                xp, yp = self.scaledPos(parent.getPosition())
+                xp, yp = self.scaledPos(parent.position)
 
                 if self.rect:
                     xpb = self.scaledXPos(node.parentBranchPositions[i])
@@ -219,7 +219,7 @@ class Painting:
                     if self.rect:
                         barPosX = node.parentBranchPositions[i]
                         r = random()*0.5 + 0.25
-                        barPosY = r*parent.getPosition()[1] + (1-r)*node.getPosition()[1]
+                        barPosY = r*parent.position[1] + (1-r)*node.position[1]
                         self.drawAncestral(fragments[k], (barPosX, barPosY), context)
 
                     k += 1

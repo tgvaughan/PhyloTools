@@ -49,7 +49,7 @@ class Node:
 
         if self.nDecendents == None:
             self.nDecendents = 0
-            for child in self.getChildren():
+            for child in self.children:
                 self.nDecendents += 1+child.getDecendentCount()
 
         return self.nDecendents
@@ -146,13 +146,13 @@ class Graph:
     def reorder(self, ascending=True):
         """Sort children of each node according to their number of decendents."""
 
-        for startNode in self.getStartNodes():
+        for startNode in self.startNodes:
             self.reorderSubGraph(startNode, ascending)
         
 
     def reorderSubGraph(self, node, ascending):
 
-        for child in node.getChildren():
+        for child in node.children:
             self.reorderSubGraph(child, ascending)
 
         node.children.sort(key=lambda x: x.getDecendentCount())                               
