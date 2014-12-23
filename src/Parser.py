@@ -40,8 +40,8 @@ class NewickGraph(Graph):
         if debug:
             print "{} nodes read.".format(len(self.getNodeList()))
 
-        # Calculate absolute node heights
-        self.getHeights()
+        # Calculate node heights
+        self.computeHeights()
 
         # Merge hybrid nodes
         self.mergeHybrids()
@@ -278,7 +278,7 @@ class NewickGraph(Graph):
     ##########################
     # TIDY UP
 
-    def getHeights(self):
+    def computeHeights(self):
         if len(self.startNodes)>1:
             for startNode in self.startNodes:
                 if "height" not in startNode.annotation.keys():
@@ -288,14 +288,21 @@ class NewickGraph(Graph):
                     self.getHeightsRecurse(startNode, None)
         else:
             self.startNodes[0].height = 0.0
-            self.getHeightsRecurse(self.startNodes[0], None)
+            self.computeHeightsRecurse(self.startNodes[0], None)
 
-    def getHeightsRecurse(self, node, last):
+        maxHeight = 0.0
+        for leaf in self.getLeafList():
+            maxHeight = max(maxHeight, leaf.height)
+
+        for node in self.getNodeList():
+            node.height = maxHeight - node.height
+
+    def computeHeightsRecurse(self, node, last):
         if last != None:
             node.height = last.height + node.branchLength
 
         for child in node.children:
-            self.getHeightsRecurse(child, node)
+            self.computeHeightsRecurse(child, node)
 
     def mergeHybrids(self):
 

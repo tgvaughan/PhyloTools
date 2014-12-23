@@ -111,7 +111,7 @@ class Graph:
         
         maxHeight = 0
         for startNode in self.startNodes:
-            maxHeight = max(startNode.getSubGraphHeight(), maxHeight)
+            maxHeight = max(startNode.height, maxHeight)
 
         return maxHeight
 
@@ -119,7 +119,7 @@ class Graph:
 
         maxOrigin = 0
         for startNode in self.startNodes:
-            maxOrigin = max(startNode.getSubGraphHeight(), maxOrigin)
+            maxOrigin = max(startNode.height, maxOrigin)
             if startNode.branchLength != None:
                 maxOrigin += startNode.branchLength
 

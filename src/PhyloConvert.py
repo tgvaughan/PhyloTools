@@ -25,15 +25,19 @@ def formatExpoTree(graphs, outfile):
         print "ExpoTree format applicable only to files containing a single graph."
         exit(1)
 
-    nodeList = sorted(graphs[0].getNodeList(), key=lambda node: node.height)
-    for node in nodeList:
+    for node in sorted(graphs[0].getNodeList(), key=lambda node: node.height):
+
+        # skip singletons:
+        if len(node.children) == 1:
+            continue
+
         if node.isLeaf():
             code = 0
         else:
             code = 1
         outfile.write("{} {}\n".format(node.height, code))
 
-
+    outfile.write(str(graphs[0].getGraphOrigin()) + " 1\n")
 
 formatFuncs = {
     "newick": formatNewick,
