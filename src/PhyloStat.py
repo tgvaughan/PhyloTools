@@ -23,7 +23,7 @@ if __name__=='__main__':
 
     # Parse graph file
     graphs = Parser.readFile(args.graphfile)
-    
+
     # Calculate and display stats:
     for stat in args.stats:
         if stat in statFuncs.keys():

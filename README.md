@@ -1,5 +1,8 @@
-PhyloPaint
+PhyloTools
 ==========
+
+
+## PhyloPaint
 
 This program takes extended Newick specifications of phylogenetic
 trees and networks and renders them in a variety of output formats via
@@ -16,3 +19,15 @@ extended Newick trees---as produced by
 [MASTER](http://tgvaughan.github.com/MASTER).  The program requires a
 working 2.7 Python installation and the
 [pycairo](http://cairographics.org/pycairo/) module.
+
+## PhyloProcess
+
+Perform several modifications to phylogenetic trees/networks.
+
+## PhyloStat
+
+Calculate summary statistics for phylogenetic trees/networks.
+
+## PhyloConvert
+
+Convert between a small number of phylogenetic tree/network formats.

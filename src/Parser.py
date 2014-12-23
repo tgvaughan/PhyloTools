@@ -184,7 +184,7 @@ class NewickGraph(Graph):
             if debug:
                 sys.stdout.write(" Lab:" + str(self.valueList[self.i-1]))
 
-            node.setLabel(self.valueList[self.i-1])
+            node.label = self.valueList[self.i-1]
         else:
             # accept epsilon
             return
@@ -266,7 +266,7 @@ class NewickGraph(Graph):
     def ruleB(self, node, debug=False):
         if self.acceptToken('COLON'):
             self.acceptToken('NUM', manditory=True)
-            node.setBranchLength(float(self.valueList[self.i-1]))
+            node.branchLength = float(self.valueList[self.i-1])
 
             if debug:
                 sys.stdout.write(" Blength:" + str(node.branchLength))
@@ -284,15 +284,15 @@ class NewickGraph(Graph):
                 if "height" not in startNode.annotation.keys():
                     raise ParseError("Graphs with multiple start nodes require height annotation.")
                 else:
-                    startNode.setHeight(float(startNode.annotation['height']))
+                    startNode.height = float(startNode.annotation['height'])
                     self.getHeightsRecurse(startNode, None)
         else:
-            self.startNodes[0].setHeight(0.0)
+            self.startNodes[0].height = 0.0
             self.getHeightsRecurse(self.startNodes[0], None)
 
     def getHeightsRecurse(self, node, last):
         if last != None:
-            node.setHeight(last.getHeight()+node.getBranchLength())
+            node.height = last.height + node.branchLength
 
         for child in node.children:
             self.getHeightsRecurse(child, node)

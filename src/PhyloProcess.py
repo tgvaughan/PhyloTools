@@ -38,19 +38,11 @@ def removeSingletons(graph):
             for i,v in enumerate(node.getChildren()):
                 collapseSingletons(v, node)
 
-
 actionFuncs = {"trim": trimGraphRootEdges,
                "sort": sortGraph,
                "removeSingletons": removeSingletons}
         
 if __name__=='__main__':
-
-    actionListString = ""
-    for action in actionFuncs.keys():
-        if len(actionListString)==0:
-            actionListString = action
-        else:
-            actionListString += ", " + action
 
     parser = ArgumentParser(description="Various tools for modifying phylogenetic networks.")
     parser.add_argument("graphfile", type=FileType('r'),
@@ -58,7 +50,7 @@ if __name__=='__main__':
     parser.add_argument("outfile", type=FileType('w'),
                         help="File to write result to.")
     parser.add_argument("actions", type=str, nargs="+",
-            help="One or more actions to perform.  Available actions: " + actionListString)
+            help="One or more actions to perform.  Available actions: " + ", ".join(actionFuncs.keys()))
 
     # Parse arguments
     args = parser.parse_args(argv[1:])

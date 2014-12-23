@@ -25,42 +25,15 @@ class Node:
     def addParent(self, parent):
         self.parents.append(parent)
         parent.children.append(self)
-    
-    def setLabel(self, label):
-        self.label = label
 
     def annotate(self, key, value):
         self.annotation[key] = value
     
-    def setBranchLength(self, branchLength):
-        self.branchLength = branchLength
-
-    def setHeight(self, height):
-        self.height = height
-    
-    def setPosition(self, position):
-        self.position = position
-
     def isRoot(self):
         return len(self.parent)==0
 
     def isLeaf(self):
         return len(self.children)==0
-
-    def getParents(self):
-        return self.parents
-
-    def getChildren(self):
-        return self.children
-
-    def getPosition(self):
-        return self.position
-    
-    def getHeight(self):
-        return self.height
-
-    def getBranchLength(self):
-        return self.branchLength
 
     def getSubGraphHeight(self):
 
@@ -120,9 +93,6 @@ class Node:
 class Graph:
     def __init__(self, *startNodes):
         self.startNodes = list(startNodes)
-
-    def getStartNodes(self):
-        return self.startNodes
 
     def getNodeList(self):
         nodes = set()
