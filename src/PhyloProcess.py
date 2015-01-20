@@ -12,36 +12,44 @@ def trimGraphRootEdges(graph):
 
     for startNode in graph.getStartNodes():
         newStartNode = startNode
-        while len(newStartNode.getChildren())==1:
-            newStartNode = newStartNode.getChildren()[0]
+        while len(newStartNode.children)==1:
+            newStartNode = newStartNode.children[0]
 
         graph.startNodes[graph.getStartNodes().index(startNode)] = newStartNode
         newStartNode.branchLength = 0.0
-        
+
 def sortGraph(graph):
     """Sorts children of each node according to the number of children in each of
     their subgraphs."""
     graph.reorder()
 
-
-def collapseSingletons(node, parent):
-    if len(node.getChildren()) == 1 and len(node.getParents()) == 1:
-        node.children[0].branchLength += node.branchLength
-        parent.children[parent.children.index(node)] = node.children[0]
-        node.children[0].parents[node.children[0].parents.index(node)] = parent
-        collapseSingletons(node.children[0], parent)
-
 def removeSingletons(graph):
     """Removes all single-child nodes from a graph."""
     for node in graph.getNodeList():
-        if len(node.getChildren())>1:
-            for i,v in enumerate(node.getChildren()):
-                collapseSingletons(v, node)
+        if len(node.children)!=1 or len(node.parents)>1:
+            for parent in node.parents:
+                trueParent = parent
+                prevParent = node
+                while trueParent != None and len(trueParent.parents)<=1 and len(trueParent.children)==1:
+                    prevParent = trueParent
+                    node.branchLength += trueParent.branchLength
+                    if len(trueParent.parents)==0:
+                        trueParent = None
+                    else:
+                        trueParent = trueParent.parents[0]
+
+                if trueParent == None:
+                    graph.startNodes[graph.startNodes.index(prevParent)] = node
+                else:
+                    trueParent.children[trueParent.children.index(prevParent)] = node
+                    trueParent.height = node.height + node.branchLength
+                node.parents[node.parents.index(parent)] = trueParent
+
 
 actionFuncs = {"trim": trimGraphRootEdges,
                "sort": sortGraph,
                "removeSingletons": removeSingletons}
-        
+
 if __name__=='__main__':
 
     parser = ArgumentParser(description="Various tools for modifying phylogenetic networks.")
@@ -66,3 +74,4 @@ if __name__=='__main__':
                 args.outfile.write(graph.getNewick() + "\n")
         else:
             raise Exception("Unsupported action {}".format(action))
+
