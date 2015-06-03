@@ -6,9 +6,10 @@ from sys import argv, exit
 import Graph
 import Parser
 
-statFuncs = {"height": lambda x: x.getGraphHeight(),
-             "origin": lambda x: x.getGraphOrigin(),
-             "nleaves": lambda x: len(x.getLeafList())}
+statFuncs = {"height": lambda x,y: x.getGraphHeight(),
+             "origin": lambda x,y: x.getGraphOrigin(),
+             "nleaves": lambda x,y: len(x.getLeafList()),
+             "nextant": lambda x,y: x.getExtantLineagesCount(float(y[0]))}
 
 if __name__=='__main__':
 
@@ -26,9 +27,10 @@ if __name__=='__main__':
 
     # Calculate and display stats:
     for stat in args.stats:
-        if stat in statFuncs.keys():
+        statName = stat.split(':')[0]
+        if statName in statFuncs.keys():
             if not args.n:
-                print stat,
+                print statName,
         else:
             raise Exception("Unsupported statistic {}".format(stat))
     if not args.n:
@@ -36,5 +38,8 @@ if __name__=='__main__':
     
     for i,graph in enumerate(graphs):
         for stat in args.stats:
-            print statFuncs[stat](graph),
+            a = stat.split(':')
+            statName = a[0]
+            statArg = a[1:]
+            print statFuncs[statName](graph, statArg),
         print

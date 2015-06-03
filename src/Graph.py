@@ -125,6 +125,18 @@ class Graph:
 
         return maxOrigin
 
+    def getExtantLineagesCount(self, height):
+        count = 0
+        for node  in self.getNodeList():
+            if node.height > height:
+                continue
+
+            for parent in node.parents:
+                if parent.height > height:
+                    count += 1
+
+        return count
+
     def getLeafList(self):
         leavesSeen = set()
         leaves = []
