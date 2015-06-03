@@ -83,7 +83,7 @@ class NewickGraph(Graph):
 
                 match = re.match(tokens[k][1], self.newickStr[idx:])
 
-                if match != None:             
+                if match != None:
 
                     tokenList.append(tokens[k][0])
                     idx += len(match.group(0))
@@ -95,7 +95,7 @@ class NewickGraph(Graph):
 
                     if debug:
                         print "{}: {} '{}'".format(idx, tokens[k][0], valueList[len(valueList)-1])
-                                               
+
                     noMatch = False
                     break
 
@@ -124,13 +124,13 @@ class NewickGraph(Graph):
                 self.parseError()
 
     def indentOut(self):
-        sys.stdout.write(" "*self.indent) 
+        sys.stdout.write(" "*self.indent)
 
     def ruleG(self, debug=False):
         self.startNodes.append(self.ruleN(None, debug=debug))
         self.startNodes.extend(self.ruleZ(None, debug=debug))
         self.acceptToken('SEMI', manditory=True)
-    
+
     def ruleZ(self, parent, debug=False):
         if self.acceptToken('COMMA'):
             siblings = [self.ruleN(parent, debug=debug)]
@@ -160,7 +160,7 @@ class NewickGraph(Graph):
 
     def ruleS(self, node, debug=False):
         if self.acceptToken('LPAREN'):
-            
+
             if debug:
                 print "("
                 self.indent += 1
@@ -307,7 +307,7 @@ class NewickGraph(Graph):
     def mergeHybrids(self):
 
         for group in self.hybrids.keys():
-            
+
             # Find primary node:
             primaryNode = None
             for node in self.hybrids[group]:
@@ -318,7 +318,7 @@ class NewickGraph(Graph):
             for node in self.hybrids[group]:
                 if node == primaryNode:
                     continue
-                
+
                 node.parents[0].children.remove(node)
                 node.parents[0].addChild(primaryNode)
                 primaryNode.annotation.update(node.annotation)
@@ -331,7 +331,7 @@ class NewickGraph(Graph):
                         self.ancestralFragments[(primaryNode, node.parents[0])] = self.ancestralFragments[(node,node.parents[0])]
 
                     del self.ancestralFragments[(node, node.parents[0])]
-        
+
         del self.hybrids
 
 
@@ -339,7 +339,7 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
     """Extract graphs from given file."""
 
     graphs = []
-    
+
     firstLine = fh.readline()
     if not firstLine.lower().startswith("#nexus"):
         if debug:
@@ -360,14 +360,14 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
             if graphNum != None and graphNum != n:
                 continue
             graphs.append(NewickGraph(line, afTrait=afTrait, debug=debug))
-            
+
         if len(graphs)==0:
             raise ParseError("No graphs found.");
 
         if debug:
             print "Successfuly parsed {} graphs.".format(len(graphs))
         return graphs
-        
+
     treesSectionSeen = False
     inTranslate = False
     newickStr = ""
@@ -386,7 +386,7 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
             if line.endswith(";"):
                 inTranslate = False
             continue
-            
+
         if line.startswith("end;"):
             if len(newickStr)>0:
                 if graphNum == None or graphNum == n:
@@ -407,7 +407,7 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
 
     if len(graphs)==0:
         raise ParseError("No graphs found.");
-    
+
     if debug:
         print "Successfully parsed {} graphs.".format(len(graphs))
 
