@@ -17,7 +17,10 @@ if __name__=='__main__':
     parser.add_argument("graphfile", type=FileType('r'), help="File containing graph data.")
     parser.add_argument("-n", action="store_true", help="Do NOT prepend statistic names to output.")
     parser.add_argument("stats", type=str, nargs="+", help=
-    "One or more statistics to calculate. Currently may be any of: " + ", ".join(statFuncs.keys()))
+            "One or more statistics to calculate. Currently may be any of: "
+            + ", ".join(statFuncs.keys()) + ". "
+            + "Some statistics accept numerical arguments.  These should be appended as "
+            + "a colon-delimited list to the statistic name.")
 
     # Parse arguments
     args = parser.parse_args(argv[1:])
