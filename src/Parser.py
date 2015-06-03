@@ -55,7 +55,7 @@ class NewickGraph(Graph):
             ('LPAREN',  '\('),
             ('RPAREN',  '\)'),
             ('COLON',   ':'),
-            ('NUM', '\d+(\.\d+)?([eE]-?\d+)?'),
+            ('NUM', '-?\d+(\.\d+)?([eE]-?\d+)?'),
             ('STRING', '"[^"]*"'),
             ('STRING', '\'[^\']*\''),
             ('LABEL',   '[a-zA-Z0-9_]+'),
@@ -396,9 +396,9 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
         if line.startswith("tree "):
             if len(newickStr)>0:
                 if graphNum == None or graphNum == n:
-                    graphs.append(NewickGraph(newickStr, debug=debug))
+                    graphs.append(NewickGraph(newickStr, afTrait=afTrait, debug=debug))
                 n += 1
-            newickStr = line[(line.find('=')+1):].strip()
+            newickStr = line[line.find('('):].strip()
         else:
             newickStr += line;
 
