@@ -29,6 +29,8 @@ if __name__ == '__main__':
     Use rectangular edges when drawing graph.""")
     parser.add_argument("-d","--drawNodes", action="store_true", help="""
     Draw additional circles representing nodes.""")
+    parser.add_argument("-n","--nodeRadius", type=float, default=0.003, help="""
+    Set radius used for node circles (default 0.003).""")
     parser.add_argument("-s","--sortTree", action="store_true", help="""
     Sort child nodes in order of clade size.""")
     parser.add_argument("-l","--lineWidth", type=float, default=1.0, help="""
@@ -90,6 +92,7 @@ if __name__ == '__main__':
     painting = Painter.Painting(graph,
                                 rect=args.rect,
                                 drawNodes=args.drawNodes,
+                                nodeRadius=args.nodeRadius,
                                 colourTrait=args.colourTrait,
                                 lineWidth=args.lineWidth, aspect=args.aspectRatio)
     

@@ -6,11 +6,12 @@ from random import random
         
 class Painting:
 
-    def __init__(self, graph, rect=True, drawNodes=False, colourTrait=None,
+    def __init__(self, graph, rect=True, drawNodes=False, nodeRadius=0.003, colourTrait=None,
                  lineWidth=1.0, bow=0.2, aspect=sqrt(2), margin=.1):
         self.graph = graph
         self.rect = rect
         self.drawNodes = drawNodes
+        self.nodeRadius = nodeRadius
         self.bow = bow
         self.colourTrait = colourTrait
         self.lineWidth = lineWidth
@@ -114,8 +115,8 @@ class Painting:
 
     def drawAncestral(self, ancestral, pos, context):
 
-        width=.05
-        height=.005
+        width=.1
+        height=.01
 
         # Draw empty box:
         widthP = width
@@ -175,8 +176,8 @@ class Painting:
 
             # Draw circle at node:
             if self.drawNodes and not node.isLeaf():
-                context.move_to(x+.003,y)
-                context.arc(x,y,.003,0,2*pi)
+                context.move_to(x+self.nodeRadius,y)
+                context.arc(x,y,self.nodeRadius,0,2*pi)
                 context.fill()
 
             for i,parent in enumerate(node.parents):
