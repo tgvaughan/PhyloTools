@@ -77,6 +77,11 @@ class NewickGraph(Graph):
 
         while idx < len(self.newickStr):
 
+            # Skip any whitepsace
+            match = re.match("\s+", self.newickStr[idx:])
+            if match != None:
+                idx += len(match.group(0))
+
             noMatch = True
 
             for k in range(len(tokens)):
