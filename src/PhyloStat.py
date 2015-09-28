@@ -7,6 +7,7 @@ import Graph
 import Parser
 
 statFuncs = {"height": lambda x,y: x.getGraphHeight(),
+             "length": lambda x,y: x.getGraphLength(),
              "origin": lambda x,y: x.getGraphOrigin(),
              "nleaves": lambda x,y: len(x.getLeafList()),
              "nextant": lambda x,y: x.getExtantLineagesCount(float(y[0]))}

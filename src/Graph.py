@@ -115,6 +115,14 @@ class Graph:
 
         return maxHeight
 
+    def getGraphLength(self):
+        length = 0
+        for node in self.getNodeList():
+            for parent in node.parents:
+                length += parent.height - node.height
+
+        return length
+
     def getGraphOrigin(self):
 
         maxOrigin = 0
