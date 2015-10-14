@@ -6,7 +6,7 @@ from sys import argv, exit
 import Graph
 import Parser
 
-def trimGraphRootEdges(graph):
+def trimGraphRootEdges(graph, params):
     """Removes root edges from graph.  In the case of a tree, results in a single root with
     in-degree 0 and out-degree >=2."""
 
@@ -18,13 +18,15 @@ def trimGraphRootEdges(graph):
         graph.startNodes[graph.getStartNodes().index(startNode)] = newStartNode
         newStartNode.branchLength = 0.0
 
-def sortGraph(graph):
+def sortGraph(graph, params):
     """Sorts children of each node according to the number of children in each of
     their subgraphs."""
+
     graph.reorder()
 
-def removeSingletons(graph):
+def removeSingletons(graph, params):
     """Removes all single-child nodes from a graph."""
+
     for node in graph.getNodeList():
         if len(node.children)!=1 or len(node.parents)>1:
             for parent in node.parents:
@@ -45,10 +47,20 @@ def removeSingletons(graph):
                     trueParent.height = node.height + node.branchLength
                 node.parents[node.parents.index(parent)] = trueParent
 
+def scaleGraph(graph, params):
+    """Scales ages of all nodes in graph by given factor."""
+
+    factor = float(params[0])
+
+    for node in graph.getNodeList():
+        node.height *= factor
+        node.branchLength *= factor
+
 
 actionFuncs = {"trim": trimGraphRootEdges,
                "sort": sortGraph,
-               "removeSingletons": removeSingletons}
+               "removeSingletons": removeSingletons,
+               "scale": scaleGraph}
 
 if __name__=='__main__':
 
@@ -57,8 +69,10 @@ if __name__=='__main__':
                         help="File containing graph data.")
     parser.add_argument("outfile", type=FileType('w'),
                         help="File to write result to.")
-    parser.add_argument("actions", type=str, nargs="+",
-            help="One or more actions to perform.  Available actions: " + ", ".join(actionFuncs.keys()))
+    parser.add_argument("actions", type=str, nargs="+", metavar='action',
+            help="One or more actions to perform.  Available actions: " + ", ".join(actionFuncs.keys()) +
+            ". The scale action requires a scale factor f which is specified by appending :f to the " +
+            "action name.")
 
     # Parse arguments
     args = parser.parse_args(argv[1:])
@@ -67,10 +81,13 @@ if __name__=='__main__':
     graphs = Parser.readFile(args.graphfile)
 
     # Perform processing
-    for action in args.actions:
+    for actionStr in args.actions:
+        actionParts = actionStr.split(":")
+        action = actionParts[0]
+        actionParams = actionParts[1:]
         if action in actionFuncs.keys():
             for graph in graphs:
-                actionFuncs[action](graph)
+                actionFuncs[action](graph, actionParams)
                 args.outfile.write(graph.getNewick() + "\n")
         else:
             raise Exception("Unsupported action {}".format(action))
