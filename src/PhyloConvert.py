@@ -31,11 +31,12 @@ def formatExpoTree(graphs, outfile):
         if len(node.children) == 1:
             continue
 
-        if node.isLeaf():
-            code = 0
-        else:
-            code = 1
-        outfile.write("{} {}\n".format(node.height, code))
+        if node.height > 0:
+            if node.isLeaf():
+                code = 0
+            else:
+                code = 1
+            outfile.write("{} {}\n".format(node.height, code))
 
     outfile.write(str(graphs[0].getGraphOrigin()) + " 99\n")
 
