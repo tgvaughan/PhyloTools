@@ -37,7 +37,7 @@ def formatExpoTree(graphs, outfile):
             code = 1
         outfile.write("{} {}\n".format(node.height, code))
 
-    outfile.write(str(graphs[0].getGraphOrigin()) + " 1\n")
+    outfile.write(str(graphs[0].getGraphOrigin()) + " 99\n")
 
 formatFuncs = {
     "newick": formatNewick,
