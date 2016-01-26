@@ -40,11 +40,15 @@ if __name__=='__main__':
             attribNames = filter(lambda a: a in args.attribute, attribNames)
 
         if args.no_header:
-            print "Node_Type Node_Age " + " ".join(attribNames)
+            print "Label Node_Type Node_Age " + " ".join(attribNames)
 
         # Display event times and types
 
         for node in graphs[0].getNodeList():
+            if node.label != None:
+                print node.label,
+            else:
+                print "NA",
 
             if len(node.children)>0:
                 if len(node.parents)>0:
@@ -55,10 +59,6 @@ if __name__=='__main__':
                 print "leaf",
 
             print node.height,
-            if node.label != None:
-                print node.label,
-            else:
-                print "NA",
 
             for name in attribNames:
                 if node.annotation.has_key(name):
