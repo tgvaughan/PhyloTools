@@ -11,10 +11,11 @@ class ParseError(Exception):
 
 class NewickGraph(Graph):
 
-    def __init__(self, newickStr, afTrait=None, debug=False):
+    def __init__(self, newickStr, afTrait=None, translate=None, debug=False):
         Graph.__init__(self)
 
         self.newickStr = newickStr
+        self.translateMap = translate
 
         # Initialise dictionary for recording ancestral
         # sequence fragment information
@@ -190,6 +191,9 @@ class NewickGraph(Graph):
                 sys.stdout.write(" Lab:" + str(self.valueList[self.i-1]))
 
             node.label = self.valueList[self.i-1]
+
+            if self.translateMap != None and node.label in self.translateMap:
+                node.label = self.translateMap[node.label]
         else:
             # accept epsilon
             return
@@ -375,33 +379,51 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
 
     treesSectionSeen = False
     inTranslate = False
+    translateMap = None
     newickStr = ""
     n = 0
     for line in fh:
-        line = line.lower().strip()
+        line = line.strip()
         if not treesSectionSeen:
-            if line.startswith("begin trees;"):
+            if line.lower().startswith("begin trees;"):
                 treesSectionSeen = True
             continue
 
-        if not inTranslate and line.startswith("translate"):
+        if not inTranslate and line.lower().startswith("translate"):
+            translateLine = line
             inTranslate = True
 
         if inTranslate:
+            translateLine += " " + line
             if line.endswith(";"):
                 inTranslate = False
+
+                entries = translateLine[9:(len(translateLine)-1)].split(",")
+                translateMap = {}
+                for entry in entries:
+                    pair = entry.strip().split(" ")
+                    key = pair[0]
+                    val = pair[1]
+
+                    if key.startswith("'") or key.startswith('"'):
+                        key = key[1:(len(key)-1)]
+
+                    if val.startswith("'") or val.startswith('"'):
+                        val = val[1:(len(val)-1)]
+
+                    translateMap[key] = val
             continue
 
-        if line.startswith("end;"):
+        if line.lower().startswith("end;"):
             if len(newickStr)>0:
                 if graphNum == None or graphNum == n:
-                    graphs.append(NewickGraph(newickStr, afTrait=afTrait, debug=debug))
+                    graphs.append(NewickGraph(newickStr, afTrait=afTrait, translate=translateMap, debug=debug))
             break
 
-        if line.startswith("tree "):
+        if line.lower().startswith("tree "):
             if len(newickStr)>0:
                 if graphNum == None or graphNum == n:
-                    graphs.append(NewickGraph(newickStr, afTrait=afTrait, debug=debug))
+                    graphs.append(NewickGraph(newickStr, afTrait=afTrait, translate=translateMap, debug=debug))
                 n += 1
             newickStr = line[line.find('('):].strip()
         else:
