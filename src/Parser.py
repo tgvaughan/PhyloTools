@@ -390,11 +390,11 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
             continue
 
         if not inTranslate and line.lower().startswith("translate"):
-            translateLine = line
+            translateLine = ""
             inTranslate = True
 
         if inTranslate:
-            translateLine += " " + line
+            translateLine += line + " "
             if line.endswith(";"):
                 inTranslate = False
 
