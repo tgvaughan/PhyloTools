@@ -59,7 +59,7 @@ class NewickGraph(Graph):
             ('NUM', '-?\d+(\.\d+)?([eE]-?\d+)?'),
             ('STRING', '"[^"]*"'),
             ('STRING', '\'[^\']*\''),
-            ('LABEL',   '[a-zA-Z0-9_]+'),
+            ('STRING', '[\w|*%/!.\-\+]+'),
             ('HASH', '#'),
             ('OPENA', '\[&'),
             ('EQUALS', '='),
@@ -70,7 +70,7 @@ class NewickGraph(Graph):
             ('SEMI',    ';')
             ]
 
-        valueTokens = ['NUM','LABEL', 'STRING']
+        valueTokens = ['NUM', 'STRING']
 
         idx=0
         tokenList=[]
@@ -186,7 +186,7 @@ class NewickGraph(Graph):
             return
 
     def ruleL(self, node, debug=False):
-        if self.acceptToken('LABEL') or self.acceptToken('NUM'):
+        if self.acceptToken('STRING') or self.acceptToken('NUM'):
             if debug:
                 sys.stdout.write(" Lab:" + str(self.valueList[self.i-1]))
 
@@ -200,7 +200,7 @@ class NewickGraph(Graph):
 
     def ruleH(self, node, debug=False):
         if self.acceptToken('HASH'):
-            if not (self.acceptToken('LABEL') or self.acceptToken('NUM')):
+            if not (self.acceptToken('STRING') or self.acceptToken('NUM')):
                 self.parseError()
 
             hlabel = self.valueList[self.i-1]
@@ -225,7 +225,7 @@ class NewickGraph(Graph):
             return
 
     def ruleC(self, node, parent, debug=False):
-        self.acceptToken('LABEL', manditory=True)
+        self.acceptToken('STRING', manditory=True)
 
         key = self.valueList[self.i-1]
 
@@ -253,7 +253,7 @@ class NewickGraph(Graph):
             return
 
     def ruleV(self, debug=False):
-        if self.acceptToken('LABEL') or self.acceptToken('NUM') or self.acceptToken('STRING'):
+        if self.acceptToken('STRING') or self.acceptToken('NUM'):
             return self.valueList[self.i-1]
         else:
             self.acceptToken('OPENV', manditory=True)
