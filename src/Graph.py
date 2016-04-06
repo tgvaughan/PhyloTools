@@ -82,6 +82,9 @@ class Node:
         if len(self.parents)>1:
             thisStr += "#H" + seenHybrids.index(self)
 
+        if len(self.annotation) > 0:
+            thisStr += "[&" + ",".join(map(lambda (k,v): k + "=" + v, self.annotation.iteritems())) + "]"
+
         if self.branchLength == None:
             thisStr += ":0.0"
         else:
