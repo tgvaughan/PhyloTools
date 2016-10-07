@@ -47,6 +47,30 @@ def removeSingletons(graph, params):
                     trueParent.height = node.height + node.branchLength
                 node.parents[node.parents.index(parent)] = trueParent
 
+def binarizeMultifurcations(graph, params):
+    """Replace multifurcations with a sequence of bifurcations."""
+
+    nodeList = graph.getNodeList()
+
+    for node in graph.getNodeList():
+
+        if len(node.children)>2:
+            nodeChildren = node.children[:]
+
+            prevParent = node;
+            for child in nodeChildren[1:(len(nodeChildren)-1)]:
+                node.children.remove(child)
+                child.parents.remove(node)
+                dummy = Graph.Node()
+                prevParent.addChild(dummy)
+                dummy.addChild(child)
+                prevParent = dummy
+
+            lastChild = nodeChildren[len(nodeChildren)-1]
+            node.children.remove(lastChild)
+            lastChild.parents.remove(node)
+            prevParent.addChild(lastChild)
+
 def scaleGraph(graph, params):
     """Scales ages of all nodes in graph by given factor."""
 
@@ -60,7 +84,8 @@ def scaleGraph(graph, params):
 actionFuncs = {"trim": trimGraphRootEdges,
                "sort": sortGraph,
                "removeSingletons": removeSingletons,
-               "scale": scaleGraph}
+               "scale": scaleGraph,
+               "binarize": binarizeMultifurcations}
 
 if __name__=='__main__':
 
