@@ -116,11 +116,14 @@ class NewickGraph(Graph):
     # RECURSIVE DECENT PARSER
 
     def parseError(self):
-        raise ParseError('Error parsing token {} ({})'.format(
+        if self.i<len(self.tokenList):
+            raise ParseError('Error parsing token {} ({})'.format(
                 self.tokenList[self.i], self.valueList[self.i]))
+        else:
+            raise ParseError('Unexpected end of file. (Maybe semicolon is missing?)')
 
     def acceptToken(self, token, manditory=False):
-        if self.tokenList[self.i]==token:
+        if self.i<len(self.tokenList) and self.tokenList[self.i]==token:
             self.i = self.i + 1
             return True
         else:
