@@ -57,11 +57,19 @@ def binarizeMultifurcations(graph, params):
         if len(node.children)>2:
             nodeChildren = node.children[:]
 
+            if len(params)>0:
+                offset = float(params[0])
+            else:
+                offset = 0
+        
             prevParent = node;
-            for child in nodeChildren[1:(len(nodeChildren)-1)]:
+            for childIdx in range(1,len(nodeChildren)-1):
+                child = nodeChildren[childIdx]
                 node.children.remove(child)
                 child.parents.remove(node)
                 dummy = Graph.Node()
+                dummy.branchLength = offset
+                child.branchLength -= offset*childIdx
                 prevParent.addChild(dummy)
                 dummy.addChild(child)
                 prevParent = dummy
@@ -70,6 +78,7 @@ def binarizeMultifurcations(graph, params):
             node.children.remove(lastChild)
             lastChild.parents.remove(node)
             prevParent.addChild(lastChild)
+            lastChild.branchLength -= offset*(len(nodeChildren)-2)
 
 def scaleGraph(graph, params):
     """Scales ages of all nodes in graph by given factor."""
