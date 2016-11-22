@@ -106,7 +106,8 @@ if __name__=='__main__':
     parser.add_argument("actions", type=str, nargs="+", metavar='action',
             help="One or more actions to perform.  Available actions: " + ", ".join(actionFuncs.keys()) +
             ". The scale action requires a scale factor f which is specified by appending :f to the " +
-            "action name.")
+            "action name. The binarize action optionally takes a finite edgelength value d which is " +
+            "specified by appending :d to the action name.")
 
     # Parse arguments
     args = parser.parse_args(argv[1:])
