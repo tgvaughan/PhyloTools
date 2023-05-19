@@ -1,8 +1,8 @@
 PhyloTools
 ==========
 
-A handful of python scripts I occasionally use to do simple things
-with trees/networks.
+A handful of python (originally 2, now converging to 3) scripts I
+occasionally use to do simple things with trees/networks.
 
 
 ## PhyloPaint
@@ -37,3 +37,9 @@ Convert between a small number of phylogenetic tree/network formats.
 ## PhyloAttribs
 
 List values of tree/network node attributes.
+
+## License
+
+PhyloTools is free software, made available under the GNU General
+Public License version 3 or later.  Full details can be found in the
+file named COPYING.

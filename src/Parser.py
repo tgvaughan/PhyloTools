@@ -39,7 +39,7 @@ class NewickGraph(Graph):
         self.ruleG(debug=debug)
 
         if debug:
-            print "{} nodes read.".format(len(self.getNodeList()))
+            print("{} nodes read.".format(len(self.getNodeList())))
 
         # Calculate node heights
         self.computeHeights()
@@ -100,7 +100,7 @@ class NewickGraph(Graph):
                         valueList.append(None)
 
                     if debug:
-                        print "{}: {} '{}'".format(idx, tokens[k][0], valueList[len(valueList)-1])
+                        print("{}: {} '{}'".format(idx, tokens[k][0], valueList[len(valueList)-1]))
 
                     noMatch = False
                     break
@@ -163,7 +163,7 @@ class NewickGraph(Graph):
         self.ruleB(node, debug=debug)
 
         if debug:
-            print
+            print()
 
         return node
 
@@ -171,7 +171,7 @@ class NewickGraph(Graph):
         if self.acceptToken('LPAREN'):
 
             if debug:
-                print "("
+                print("(")
                 self.indent += 1
 
             self.ruleN(node, debug=debug)
@@ -182,7 +182,7 @@ class NewickGraph(Graph):
             if debug:
                 self.indent -= 1
                 self.indentOut()
-                print  ")",
+                print(")", end='')
 
         else:
             # accept epsilon
@@ -355,7 +355,7 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
     firstLine = fh.readline()
     if not firstLine.lower().startswith("#nexus"):
         if debug:
-            print "Not a valid NEXUS file. Trying to parse as a collection of extended Newick strings..."
+            print("Not a valid NEXUS file. Trying to parse as a collection of extended Newick strings...")
 
         lines = [firstLine]
         lines.extend(fh.readlines())
@@ -377,7 +377,7 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
             raise ParseError("No graphs found.");
 
         if debug:
-            print "Successfuly parsed {} graphs.".format(len(graphs))
+            print("Successfuly parsed {} graphs.".format(len(graphs)))
         return graphs
 
     treesSectionSeen = False
@@ -439,7 +439,7 @@ def readFile (fh, debug=False, afTrait=None, graphNum=None):
         raise ParseError("No graphs found.");
 
     if debug:
-        print "Successfully parsed {} graphs.".format(len(graphs))
+        print("Successfully parsed {} graphs.".format(len(graphs)))
 
     fh.close()
     return graphs
