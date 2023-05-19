@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from sys import argv, exit
 from argparse import ArgumentParser, FileType
@@ -63,12 +63,12 @@ if __name__ == '__main__':
         args.format = args.format.lower()
     
     if args.format == None:
-        print "Could not determine output format from file extention."
-        print "(Specify explicitly using --format.)"
+        print("Could not determine output format from file extention.")
+        print("(Specify explicitly using --format.)")
         exit(1)
     
     if args.format not in ["pdf","ps", "svg", "png"]:
-        print "Unsupported output format '{}'.".format(args.format)
+        print("Unsupported output format '{}'.".format(args.format))
         exit(1)
     
     # Parse graphs:
@@ -77,7 +77,7 @@ if __name__ == '__main__':
                              afTrait=args.ancestralFragmentTrait,
                              debug=args.debug)
     if len(graphs)>1:
-        print "Cannot yet deal with multiple trees.  Please select an individual tree using --tree."
+        print("Cannot yet deal with multiple trees.  Please select an individual tree using --tree.")
         exit(1)
     graph = graphs[0]
     
